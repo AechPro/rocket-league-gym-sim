@@ -18,6 +18,7 @@ This project acts as a drop-in replacement for RLGym, and can be used in exactly
 - `auto_minimize`
 - `force_paging`
 - `launch_preference`
+- `raise_on_crash`
 
 Otherwise you can replace every instance of `rlgym` with `rlgym_sim` (or simply `import rlgym_sim as rlgym`) and your existing RLGym code should work.
 
