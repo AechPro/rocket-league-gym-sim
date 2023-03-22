@@ -7,7 +7,7 @@ This project is a TEMPORARY STOP-GAP to use [RocketSim](https://github.com/Zeala
 Installing this project requires you to build Python bindings from a separate project, and acquire assets from a copy of the game you own with another project. I will not walk you through this process. The necessary links and basic instructions are listed below. If you cannot follow those, don't bother me.
 
 ## INSTALLATION
-1. Clone and build the [Python bindings](https://github.com/uservar/pyrocketsim) (may be slightly out of date by the time of posting)
+1. Clone and build the [Python bindings](https://github.com/uservar/pyrocketsim/tree/dev)
 2. Build and run the [asset dumper](https://github.com/ZealanL/RLArenaCollisionDumper)
 3. Move the dumped assets to the top level of your project directory
 4. Clone and install this project with pip
