@@ -45,9 +45,6 @@ def make(game_speed: int = 100,
 
     # Imports are inside the function because setup fails otherwise (Missing win32file)
     from rlgym_sim.gym import Gym
-    from rlgym_sim.version import print_current_release_notes
-
-    print_current_release_notes()
 
     match = Match(reward_function=reward_fn,
                   terminal_conditions=terminal_conditions,
