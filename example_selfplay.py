@@ -1,8 +1,6 @@
 import rlgym_sim
-from rlgym.gamelaunch import LaunchPreference
 import time
 
-# env = rlgym.make(spawn_opponents=True, use_injector=True, launch_preference=LaunchPreference.STEAM)
 env = rlgym_sim.make(spawn_opponents=True)
 
 while True:
