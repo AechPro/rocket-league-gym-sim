@@ -38,7 +38,6 @@ class RocketSimGame(object):
         self.new_game(self.tick_skip, self.team_size, self.spawn_opponents)
         self.arena.set_goal_score_call_back(self._goal_callback)
 
-
     def new_game(self, tick_skip, team_size, spawn_opponents):
         for car in self.arena.get_cars():
             self.arena.remove_car(car)
@@ -143,17 +142,20 @@ class RocketSimGame(object):
             gamestate.players.append(player.data)
 
         ball_state = self.arena.ball.get_state()
-        ball_vec_mem[0, 0] = ball_state.pos.x
-        ball_vec_mem[0, 1] = ball_state.pos.y
-        ball_vec_mem[0, 2] = ball_state.pos.z
+        ball_pos = ball_state.pos
+        ball_vel = ball_state.vel
+        ball_ang_vel = ball_state.ang_vel
+        ball_vec_mem[0, 0] = ball_pos.x
+        ball_vec_mem[0, 1] = ball_pos.y
+        ball_vec_mem[0, 2] = ball_pos.z
 
-        ball_vec_mem[1, 0] = ball_state.vel.x
-        ball_vec_mem[1, 1] = ball_state.vel.y
-        ball_vec_mem[1, 2] = ball_state.vel.z
+        ball_vec_mem[1, 0] = ball_vel.x
+        ball_vec_mem[1, 1] = ball_vel.y
+        ball_vec_mem[1, 2] = ball_vel.z
 
-        ball_vec_mem[2, 0] = ball_state.ang_vel.x
-        ball_vec_mem[2, 1] = ball_state.ang_vel.y
-        ball_vec_mem[2, 2] = ball_state.ang_vel.z
+        ball_vec_mem[2, 0] = ball_ang_vel.x
+        ball_vec_mem[2, 1] = ball_ang_vel.y
+        ball_vec_mem[2, 2] = ball_ang_vel.z
 
         ball_vec_mem[3, 0] = -ball_vec_mem[0, 0]
         ball_vec_mem[3, 1] = -ball_vec_mem[0, 1]
@@ -170,9 +172,9 @@ class RocketSimGame(object):
         ball.position = ball_vec_mem[0]
         ball.linear_velocity = ball_vec_mem[1]
         ball.angular_velocity = ball_vec_mem[2]
-        inverted_ball.position=ball_vec_mem[3]
-        inverted_ball.linear_velocity=ball_vec_mem[4]
-        inverted_ball.angular_velocity=ball_vec_mem[5]
+        inverted_ball.position = ball_vec_mem[3]
+        inverted_ball.linear_velocity = ball_vec_mem[4]
+        inverted_ball.angular_velocity = ball_vec_mem[5]
 
         pads = self.arena.get_boost_pads()
         locs = common_values.BOOST_LOCATIONS

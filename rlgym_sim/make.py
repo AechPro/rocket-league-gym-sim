@@ -33,7 +33,7 @@ def make(game_speed: int = 100,
     to env.step(). Setting this to True is significantly slower but will allow users to compare GameStates between steps
     without manually copying the state inside their configuration objects. Setting this to False will make env.step()
     much faster, but users will need to carefully copy every value they want to track in the GameState, PlayerData, and
-    PhysicsData objects across steps.
+    PhysicsObject objects across steps.
 
     :param terminal_conditions: List of terminal condition objects (rlgym_sim.utils.TerminalCondition)
     :param reward_fn: Reward function object (rlgym_sim.utils.RewardFunction)

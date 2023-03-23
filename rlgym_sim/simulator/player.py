@@ -44,22 +44,27 @@ class Player(object):
         player_data.has_flip = not car_state.has_flipped
 
         rot_mat = self.rot_mat_mem
-        rot_mat[0, :] = car_state.rot_mat[0].as_numpy()
-        rot_mat[1, :] = car_state.rot_mat[1].as_numpy()
-        rot_mat[2, :] = car_state.rot_mat[2].as_numpy()
+        car_rot_mat = car_state.rot_mat
+        rot_mat[0, :] = car_rot_mat[0].as_numpy()
+        rot_mat[1, :] = car_rot_mat[1].as_numpy()
+        rot_mat[2, :] = car_rot_mat[2].as_numpy()
         quaternion = math.rotation_to_quaternion(rot_mat)
 
-        car_vec_mem[0, 0] = car_state.pos.x
-        car_vec_mem[0, 1] = car_state.pos.y
-        car_vec_mem[0, 2] = car_state.pos.z
+        car_pos = car_state.pos
+        car_vel = car_state.vel
+        car_ang_vel = car_state.ang_vel
 
-        car_vec_mem[1, 0] = car_state.vel.x
-        car_vec_mem[1, 1] = car_state.vel.y
-        car_vec_mem[1, 2] = car_state.vel.z
+        car_vec_mem[0, 0] = car_pos.x
+        car_vec_mem[0, 1] = car_pos.y
+        car_vec_mem[0, 2] = car_pos.z
 
-        car_vec_mem[2, 0] = car_state.ang_vel.x
-        car_vec_mem[2, 1] = car_state.ang_vel.y
-        car_vec_mem[2, 2] = car_state.ang_vel.z
+        car_vec_mem[1, 0] = car_vel.x
+        car_vec_mem[1, 1] = car_vel.y
+        car_vec_mem[1, 2] = car_vel.z
+
+        car_vec_mem[2, 0] = car_ang_vel.x
+        car_vec_mem[2, 1] = car_ang_vel.y
+        car_vec_mem[2, 2] = car_ang_vel.z
 
         car_vec_mem[3, 0] = -car_vec_mem[0, 0]
         car_vec_mem[3, 1] = -car_vec_mem[0, 1]
@@ -80,7 +85,6 @@ class Player(object):
         physics_data._rotation_mtx = rot_mat
         physics_data._euler_angles = car_state.angles.as_numpy()
 
-        # inverted_quaternion = [quaternion[3], quaternion[2], -quaternion[1], -quaternion[0]]
         inverted_quaternion[0] = quaternion[3]
         inverted_quaternion[1] = quaternion[2]
         inverted_quaternion[2] = -quaternion[1]

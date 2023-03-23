@@ -23,7 +23,7 @@ All variables having to do with the game client have been removed from the `make
 - `raise_on_crash`
 - `self_play`
 
-Additionally, there is a new hyper-parameter that can be passed to `rlgym_sim.make` called `copy_gamestate_every_step`. Leave this alone for the default behavior, but if you are careful to copy all relevant `GameState`, `PlayerData`, and `PhysicsData` information between calls to `env.step` in your configuration objects when you need to track things over time, setting `copy_gamestate_every_step` to `True` will significantly speed up the environment.
+Additionally, there is a new hyper-parameter that can be passed to `rlgym_sim.make` called `copy_gamestate_every_step`. Leave this alone for the default behavior, but if you are careful to copy all relevant `GameState`, `PlayerData`, and `PhysicsObject` information between calls to `env.step` in your configuration objects when you need to track things over time, setting `copy_gamestate_every_step` to `True` will significantly speed up the environment.
 
 ## KNOWN ISSUES
 - Setting the game speed, gravity, and boost consumption values through `rlgym.update_settings()` does not work and is not supported.
