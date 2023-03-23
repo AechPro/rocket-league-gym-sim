@@ -11,7 +11,6 @@ class RocketSimGame(object):
     INVERT_VEC = np.array([-1, -1, 1])
 
     def __init__(self, match, copy_gamestate=True):
-        rsim.init()
         self.copy_gamestate = copy_gamestate
         self.arena = rsim.Arena(rsim.SOCCAR)
         self.blue_score = 0
@@ -24,7 +23,6 @@ class RocketSimGame(object):
         self.players = {}
         self.boost_index_map = {}
         self.car_index_map = {}
-        self.new_game(self.tick_skip, self.team_size, self.spawn_opponents)
         self.cars = []
         self.ball_vec_mem = np.zeros((6,3))
 
@@ -37,9 +35,14 @@ class RocketSimGame(object):
         self.gamestate.inverted_ball = self.inverted_ball
         self.gamestate.boost_pads = np.asarray([1 for _ in range(34)])
         self.gamestate.inverted_boost_pads = np.asarray([1 for _ in range(34)])
+        self.new_game(self.tick_skip, self.team_size, self.spawn_opponents)
+        self.arena.set_goal_score_call_back(self._goal_callback)
 
 
     def new_game(self, tick_skip, team_size, spawn_opponents):
+        for car in self.arena.get_cars():
+            self.arena.remove_car(car)
+
         self.blue_score = 0
         self.orange_score = 0
         self.team_size = team_size
@@ -71,8 +74,12 @@ class RocketSimGame(object):
         rsim.Vec()
 
         idx = 9
-        n_players = self.n_agents
+        n_players = (len(state_vals) - idx) // player_len
+        if n_players != self.n_agents:
+            self.new_game(self.tick_skip, n_players//2, self.spawn_opponents)
+
         cars = self.arena.get_cars()
+        offset = min(self.car_index_map.keys()) - 1
         for i in range(n_players):
             start = idx + i*player_len
             stop = start + player_len
@@ -83,6 +90,7 @@ class RocketSimGame(object):
                 converted_player_id = spectator_id - 4 + self.team_size
             else:
                 converted_player_id = spectator_id
+            converted_player_id = offset + converted_player_id
 
             car = cars[self.car_index_map[converted_player_id]]
             car_state = rsim.CarState()
@@ -103,7 +111,7 @@ class RocketSimGame(object):
         for pad in self.arena.get_boost_pads():
             pad.set_state(rsim.BoostPadState())
 
-        self.cars = self.arena.get_cars()
+        self.cars = cars
 
         return self._build_gamestate()
 
@@ -112,9 +120,6 @@ class RocketSimGame(object):
 
         gamestate = self._build_gamestate()
         self.arena.step(self.tick_skip)
-
-        if self._check_goal():
-            self.arena.ball.set_state(RocketSimGame.DEFAULT_BALL_STATE)
 
         self.cars = self.arena.get_cars()
         return gamestate
@@ -204,16 +209,13 @@ class RocketSimGame(object):
 
             cars[cars_idx].set_controls(car_controls)
 
-    def _check_goal(self):
-        ball_y = self.arena.ball.get_state().pos[1]
-        if ball_y >= RocketSimGame.GOAL_THRESHOLD_Y:
-            self.orange_score += 1
-            return True
-        elif ball_y <= -RocketSimGame.GOAL_THRESHOLD_Y:
-            self.blue_score += 1
-            return True
+    def _goal_callback(self, arena, scoring_team):
+        self.arena.ball.set_state(RocketSimGame.DEFAULT_BALL_STATE)
 
-        return False
+        if scoring_team == rsim.BLUE:
+            self.blue_score += 1
+        else:
+            self.orange_score += 1
 
     def _build_index_maps(self):
         pads = self.arena.get_boost_pads()

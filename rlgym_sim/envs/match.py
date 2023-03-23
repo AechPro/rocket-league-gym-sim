@@ -11,6 +11,8 @@ from typing import List, Union, Any
 
 
 class Match(Environment):
+    MAX_TEAM_SIZE = 4
+
     def __init__(self,
                  reward_function,
                  terminal_conditions,
@@ -46,7 +48,7 @@ class Match(Environment):
         self._auto_detect_obs_space()
         self.action_space = self._action_parser.get_action_space()
 
-        self._prev_actions = np.zeros((self.agents, 8), dtype=float)
+        self._prev_actions = np.zeros((Match.MAX_TEAM_SIZE*2, 8), dtype=float)
         self._spectator_ids = None
 
         self.last_touch = None
