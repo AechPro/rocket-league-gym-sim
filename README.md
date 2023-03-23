@@ -1,5 +1,5 @@
 # rocket-league-gym-sim
-A version of [RLGym](rlgym.org) for use with the [RocketSim](https://github.com/ZealanL/RocketSim) simulator.
+A version of [RLGym](https://www.rlgym.org) for use with the [RocketSim](https://github.com/ZealanL/RocketSim) simulator.
 
 ## FOREWORD
 This project is a TEMPORARY STOP-GAP to use RocketSim while RLGym 2.0 is in development. I provide no guarantees that it is bug-free or that I will not make breaking changes to this project in the future.
