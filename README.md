@@ -8,7 +8,7 @@ Installing this project requires you to build Python bindings from a separate pr
 
 ## INSTALLATION
 1. You will need c++20 build tools and cmake > 3.13
-2. Install this project with pip via 
+2. Install this project with pip via `pip install git+https://github.com/AechPro/rocket-league-gym-sim@main`
 3. Build and run the [asset dumper](https://github.com/ZealanL/RLArenaCollisionDumper)
 4. Move the dumped assets to the top level of your project directory
 
