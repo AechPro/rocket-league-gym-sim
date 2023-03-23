@@ -25,13 +25,15 @@ class Player(object):
         player_data.car_data._has_computed_rot_mtx = True
 
         self.data = player_data
-        self.prev_touched_ticks = car_state.last_hit_ball_tick
+        last_touch_tick = car_state.last_hit_ball_tick
+        self.prev_touched_ticks = 0 if last_touch_tick == 18446744073709551615 else last_touch_tick
         self.update(car)
 
     def update(self, car):
         player_data = self.data
         physics_data = player_data.car_data
         inverted_physics_data = player_data.inverted_car_data
+        player_data.ball_touched = False
 
         car_vec_mem = self.car_vec_mem
         inverted_quaternion = self.inverted_quaternion
@@ -96,10 +98,8 @@ class Player(object):
         inverted_physics_data._has_computed_rot_mtx = False
         inverted_physics_data._has_computed_euler_angles = False
 
-        if self.prev_touched_ticks < car_state.last_hit_ball_tick:
-            self.prev_touched_ticks = car_state.last_hit_ball_tick
-            player_data.ball_touched = True
-
-        elif self.prev_touched_ticks > car_state.last_hit_ball_tick:
-            self.prev_touched_ticks = car_state.last_hit_ball_tick
-
+        last_hit_tick = car_state.last_hit_ball_tick
+        if last_hit_tick != 18446744073709551615:
+            if self.prev_touched_ticks < last_hit_tick:
+                self.prev_touched_ticks = last_hit_tick
+                player_data.ball_touched = True

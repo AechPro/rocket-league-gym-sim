@@ -28,5 +28,6 @@ Additionally, there is a new hyper-parameter that can be passed to `rlgym_sim.ma
 ## KNOWN ISSUES
 - Setting the game speed, gravity, and boost consumption values through `rlgym.update_settings()` does not work and is not supported.
 - A variety of classes in `rlgym_utils` such as `SB3MultipleInstanceEnv` imports the `rlgym` library to build environments, so you will need to replace those imports yourself and remove the misc launch options listed above if you want to use SB3 with `rlgym_sim`. Note also that `SB3MultipleInstanceEnv` waits 60 seconds between launching clients by default because multiple Rocket League clients will break each other if launched simultaneously. This is not the case with RocketSim, so you can remove that delay.
-- the `PlayerData` objects do not track `match_goals`, `match_saves`, `match_shots`, `match_demolishes`, or `boost_pickups` yet.
+- the `PlayerData` objects do not track `match_goals`, `match_saves`, `match_shots`, `match_demolishes`, or `boost_pickups` yet. 
 - Maybe some kind of scoring callback issue?
+- "things aren't right"
