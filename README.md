@@ -1,8 +1,8 @@
 # rocket-league-gym-sim
-A version of [RLGym](https://github.com/lucas-emery/rocket-league-gym) for use with the RocketSim simulator.
+A version of [RLGym](https://github.com/lucas-emery/rocket-league-gym) for use with the [RocketSim](https://github.com/ZealanL/RocketSim) simulator.
 
 ## FOREWORD
-This project is a TEMPORARY STOP-GAP to use [RocketSim](https://github.com/ZealanL/RocketSim) while RLGym 2.0 is in development. I provide no guarantees that it is bug-free or that I will not make breaking changes to this project in the future.
+This project is a TEMPORARY STOP-GAP to use RocketSim while RLGym 2.0 is in development. I provide no guarantees that it is bug-free or that I will not make breaking changes to this project in the future.
 
 Installing this project requires you to build Python bindings from a separate project, and acquire assets from a copy of the game you own with another project. I will not walk you through this process. The necessary links and basic instructions are listed below. If you cannot follow those, don't bother me.
 
