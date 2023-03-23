@@ -65,6 +65,7 @@ class RocketSimGame(object):
 
     def reset(self, state_vals):
         player_len = 14
+        state_vals = np.asarray(state_vals)
         ball_state = rsim.BallState()
         ball_state.pos = rsim.Vec(state_vals[0], state_vals[1], state_vals[2])
         ball_state.vel = rsim.Vec(state_vals[3], state_vals[4], state_vals[5])
