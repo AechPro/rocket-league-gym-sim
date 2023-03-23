@@ -2,15 +2,15 @@
 A version of [RLGym](https://github.com/lucas-emery/rocket-league-gym) for use with the RocketSim simulator.
 
 ## FOREWORD
-This project is a TEMPORARY STOP-GAP to use [RocketSim](https://github.com/ZealanL/RocketSim) while RLGym 2.0 is in development. I provide no guarantees that it is bug-free or that I will not make breaking changes to this project in the future. 
+This project is a TEMPORARY STOP-GAP to use [RocketSim](https://github.com/ZealanL/RocketSim) while RLGym 2.0 is in development. I provide no guarantees that it is bug-free or that I will not make breaking changes to this project in the future.
 
 Installing this project requires you to build Python bindings from a separate project, and acquire assets from a copy of the game you own with another project. I will not walk you through this process. The necessary links and basic instructions are listed below. If you cannot follow those, don't bother me.
 
 ## INSTALLATION
-1. Clone and build the [Python bindings](https://github.com/uservar/pyrocketsim/tree/dev). You will need c++20 build tools for this.
-2. Build and run the [asset dumper](https://github.com/ZealanL/RLArenaCollisionDumper)
-3. Move the dumped assets to the top level of your project directory
-4. Clone and install this project with pip
+1. You will need c++20 build tools and cmake > 3.13
+2. Install this project with pip via 
+3. Build and run the [asset dumper](https://github.com/ZealanL/RLArenaCollisionDumper)
+4. Move the dumped assets to the top level of your project directory
 
 ## USAGE
 This project acts as a drop-in replacement for RLGym, and can be used in exactly the same way. However, note that all variables having to do with the game client have been removed from the `make` function. For example, `rlgym_sim.make(use_injector=True)` will fail because there is no injector. The following is a list of all removed `make` variables:
