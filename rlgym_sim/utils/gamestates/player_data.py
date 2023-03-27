@@ -29,12 +29,13 @@ class PlayerData(object):
         self.match_goals = other.match_goals
         self.match_saves = other.match_saves
         self.match_shots = other.match_shots
-        self.match_demolishes = other.car_id
+        self.match_demolishes = other.match_demolishes
         self.boost_pickups = other.boost_pickups
         self.is_demoed = other.is_demoed
         self.on_ground = other.on_ground
         self.ball_touched = other.ball_touched
         self.has_jump = other.has_jump
+        self.has_flip = other.has_flip
         self.boost_amount = other.boost_amount
         self.car_data.copy(other.car_data)
         self.inverted_car_data.copy(other.inverted_car_data)

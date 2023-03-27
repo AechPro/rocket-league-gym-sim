@@ -21,8 +21,7 @@ class Player(object):
             player_data.team_num = common_values.ORANGE_TEAM
 
         player_data.car_id = car.id
-        player_data.car_data._has_computed_euler_angles = True
-        player_data.car_data._has_computed_rot_mtx = True
+        # player_data.car_data._has_computed_rot_mtx = True
 
         self.data = player_data
         last_touch_tick = car_state.last_hit_ball_tick
@@ -34,22 +33,26 @@ class Player(object):
         physics_data = player_data.car_data
         inverted_physics_data = player_data.inverted_car_data
         player_data.ball_touched = False
+        player_data.boost_pickups = 0
+        player_data.match_demolishes = 0
+        player_data.match_goals = 0
+        player_data.match_saves = 0
+        player_data.match_shots = 0
 
         car_vec_mem = self.car_vec_mem
         inverted_quaternion = self.inverted_quaternion
         car_state = car.get_state()
-
         player_data.boost_amount = car_state.boost
         player_data.is_demoed = car_state.is_demoed
-        player_data.has_jump = car_state.air_time_since_jump < Player.JUMP_TIMER_SECONDS and not (car_state.has_flipped or car_state.has_double_jumped)
+        player_data.has_jump = not car_state.has_jumped
         player_data.on_ground = car_state.is_on_ground
-        player_data.has_flip = not car_state.has_flipped
+        player_data.has_flip = car_state.air_time_since_jump < Player.JUMP_TIMER_SECONDS and not (car_state.has_flipped or car_state.has_double_jumped)
 
         rot_mat = self.rot_mat_mem
         car_rot_mat = car_state.rot_mat
-        rot_mat[0, :] = car_rot_mat[0].as_numpy()
-        rot_mat[1, :] = car_rot_mat[1].as_numpy()
-        rot_mat[2, :] = car_rot_mat[2].as_numpy()
+        rot_mat[:, 0] = car_rot_mat[0].as_numpy()
+        rot_mat[:, 1] = car_rot_mat[1].as_numpy()
+        rot_mat[:, 2] = car_rot_mat[2].as_numpy()
         quaternion = math.rotation_to_quaternion(rot_mat)
 
         car_pos = car_state.pos
@@ -85,7 +88,6 @@ class Player(object):
         physics_data.angular_velocity = car_vec_mem[2]
         physics_data.quaternion = quaternion
         physics_data._rotation_mtx = rot_mat
-        physics_data._euler_angles = car_state.angles.as_numpy()
 
         inverted_quaternion[0] = quaternion[3]
         inverted_quaternion[1] = quaternion[2]

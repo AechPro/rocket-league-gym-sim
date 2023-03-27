@@ -64,6 +64,7 @@ class GoalScoredCondition(TerminalCondition):
         if current_state.blue_score != self.blue_score or current_state.orange_score != self.orange_score:
             self.blue_score = current_state.blue_score
             self.orange_score = current_state.orange_score
+            # print("GOAL",current_state.blue_score, current_state.orange_score, self.blue_score, self.orange_score)
             return True
         return False
 

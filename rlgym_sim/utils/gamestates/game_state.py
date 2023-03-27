@@ -36,8 +36,9 @@ class GameState(object):
             self.copy(other)
 
     def copy(self, other):
-        self.boost_pads[:] = other.boost_pads[:]
-        self.inverted_boost_pads[:] = other.inverted_boost_pads[:]
+        # print("copying", other.blue_score, other.orange_score)
+        self.boost_pads = other.boost_pads.copy()
+        self.inverted_boost_pads = other.inverted_boost_pads.copy()
         self.ball.copy(other.ball)
         self.inverted_ball.copy(other.inverted_ball)
         self.players = []
@@ -47,6 +48,7 @@ class GameState(object):
             self.players.append(p)
         self.game_type = other.game_type
         self.blue_score = other.blue_score
+        self.orange_score = other.orange_score
         self.last_touch = other.last_touch
 
     def decode(self, state_floats: List[float]):
@@ -132,16 +134,16 @@ class GameState(object):
                  "Game Type: {}\n" \
                  "Orange Score: {}\n" \
                  "Blue Score: {}\n" \
-                 "PLAYERS: {}\n" \
                  "BALL: {}\n" \
                  "INV_BALL: {}\n" \
                  "".format("*" * 8, "*" * 8,
                            self.game_type,
                            self.orange_score,
                            self.blue_score,
-                           self.players,
                            self.ball,
                            self.inverted_ball)
+        for player in self.players:
+            output = "{}PLAYERS: {}\n".format(output, player)
 
         return output
 

@@ -22,13 +22,13 @@ class PhysicsObject(object):
         self._has_computed_euler_angles = False
 
     def copy(self, other):
-        self.position[:] = other.position[:]
-        self.linear_velocity[:] = other.linear_velocity[:]
-        self.angular_velocity[:] = other.angular_velocity[:]
-        self.quaternion[:] = other.quaternion[:]
+        self.position = other.position.copy()
+        self.linear_velocity = other.linear_velocity.copy()
+        self.angular_velocity = other.angular_velocity.copy()
+        self.quaternion = other.quaternion.copy()
 
-        self._euler_angles[:] = other._euler_angles[:]
-        self._rotation_mtx[:] = other._rotation_mtx[:]
+        self._euler_angles = other._euler_angles.copy()
+        self._rotation_mtx = other._rotation_mtx.copy()
         self._has_computed_rot_mtx = other._has_computed_rot_mtx
         self._has_computed_euler_angles = other._has_computed_euler_angles
 
@@ -120,3 +120,11 @@ class PhysicsObject(object):
                 repr.append(arg)
 
         return repr
+
+    def __str__(self):
+        return "{} | {} | {} | {} | {} | {}".format(self.position.tolist(),
+                                                   self.linear_velocity.tolist(),
+                                                   self.angular_velocity.tolist(),
+                                                   self.quaternion.tolist(),
+                                                   self.euler_angles().tolist(),
+                                                   self.rotation_mtx().ravel().tolist())

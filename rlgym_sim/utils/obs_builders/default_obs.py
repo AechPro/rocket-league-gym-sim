@@ -38,7 +38,6 @@ class DefaultObs(ObsBuilder):
                ball.angular_velocity * self.ANG_VEL_COEF,
                previous_action,
                pads]
-
         self._add_player_to_obs(obs, player, inverted)
 
         allies = []

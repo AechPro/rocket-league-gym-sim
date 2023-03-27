@@ -102,6 +102,7 @@ def quat_to_rot_mtx(quat: np.ndarray) -> np.ndarray:
 
 
 def rotation_to_quaternion(m: np.ndarray) -> np.ndarray:
+    # print("OTHER",other_rot_to_quat(m))
     trace = np.trace(m)
     q = np.zeros(4)
 
@@ -139,6 +140,37 @@ def rotation_to_quaternion(m: np.ndarray) -> np.ndarray:
 
     return -q
 
+
+def other_rot_to_quat(a):
+    q = [0,0,0,0]
+    trace = a[0][0] + a[1][1] + a[2][2]
+    if trace > 0:
+        s = 0.5 / np.sqrt(trace+ 1.0)
+        q[0] = 0.25 / s
+        q[1] = ( a[2][1] - a[1][2] ) * s
+        q[2] = ( a[0][2] - a[2][0] ) * s
+        q[3] = ( a[1][0] - a[0][1] ) * s
+    else: 
+        if a[0][0] > a[1][1] and a[0][0] > a[2][2]:
+            s = 2.0 * np.sqrt( 1.0 + a[0][0] - a[1][1] - a[2][2])
+            q[0] = (a[2][1] - a[1][2] ) / s
+            q[1] = 0.25 * s
+            q[2] = (a[0][1] + a[1][0] ) / s
+            q[3] = (a[0][2] + a[2][0] ) / s
+        elif a[1][1] > a[2][2]:
+            s = 2.0 * np.sqrt( 1.0 + a[1][1] - a[0][0] - a[2][2])
+            q[0] = (a[0][2] - a[2][0] ) / s
+            q[1] = (a[0][1] + a[1][0] ) / s
+            q[2] = 0.25 * s
+            q[3] = (a[1][2] + a[2][1] ) / s
+        else:
+            s = 2.0 * np.sqrt( 1.0 + a[2][2] - a[0][0] - a[1][1] )
+            q[0] = (a[1][0] - a[0][1] ) / s
+            q[1] = (a[0][2] + a[2][0] ) / s
+            q[2] = (a[1][2] + a[2][1] ) / s
+            q[3] = 0.25 * s
+
+    return q
 
 def euler_to_rotation(pyr):
     cp, cy, cr = np.cos(pyr)

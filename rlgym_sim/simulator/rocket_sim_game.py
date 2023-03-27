@@ -120,7 +120,9 @@ class RocketSimGame(object):
         self._set_controls(controls)
 
         gamestate = self._build_gamestate()
+        # print("STEPPING", self.arena.get_cars()[0].get_state().pos)
         self.arena.step(self.tick_skip)
+        # print("AFTER STEP",self.arena.get_cars()[0].get_state().pos)
 
         self.cars = self.arena.get_cars()
         return gamestate
@@ -139,9 +141,11 @@ class RocketSimGame(object):
         ball_vec_mem = self.ball_vec_mem
 
         most_recent_touch_time = None
+
         for car in self.cars:
             player = self.players[car.id]
             player.update(car)
+            # print("RSIM CAR DATA",car.get_state().pos)
 
             if player.data.ball_touched:
                 if most_recent_touch_time is None or most_recent_touch_time < player.prev_touched_ticks:
@@ -149,6 +153,9 @@ class RocketSimGame(object):
                     gamestate.last_touch = player.id
 
             gamestate.players.append(player.data)
+
+        # print("PLAYER 1 CAR DATA", self.players[1].data.car_data.position)
+        # print("PLAYER 2 CAR DATA", self.players[2].data.car_data.position)
 
         ball_state = self.arena.ball.get_state()
         ball_pos = ball_state.pos
@@ -185,6 +192,9 @@ class RocketSimGame(object):
         inverted_ball.linear_velocity = ball_vec_mem[4]
         inverted_ball.angular_velocity = ball_vec_mem[5]
 
+        # print("PLAYER 1 CAR DATA", self.players[1].data.car_data.quaternion)
+        # print("PLAYER 2 CAR DATA", self.players[2].data.car_data.quaternion)
+
         pads = self.arena.get_boost_pads()
         locs = common_values.BOOST_LOCATIONS
         boost_index_map = self.boost_index_map
@@ -192,7 +202,6 @@ class RocketSimGame(object):
             pad_active = pads[boost_index_map[locs[i]]].get_state().is_active
             inverted_boostpads[-(i+1)] = pad_active
             boostpads[i] = pad_active
-
 
         if self.copy_gamestate:
             return GameState(other=gamestate)
