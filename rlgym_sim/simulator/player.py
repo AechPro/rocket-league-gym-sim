@@ -42,7 +42,7 @@ class Player(object):
         car_vec_mem = self.car_vec_mem
         inverted_quaternion = self.inverted_quaternion
         car_state = car.get_state()
-        player_data.boost_amount = car_state.boost
+        player_data.boost_amount = car_state.boost / 100
         player_data.is_demoed = car_state.is_demoed
         player_data.has_jump = not car_state.has_jumped
         player_data.on_ground = car_state.is_on_ground

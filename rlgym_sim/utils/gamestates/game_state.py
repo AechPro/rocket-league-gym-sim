@@ -142,6 +142,7 @@ class GameState(object):
                            self.blue_score,
                            self.ball,
                            self.inverted_ball)
+        output = "{}BOOSTS: {}\nINV_BOOSTS: {}\n".format(output, self.boost_pads.tolist(), self.inverted_boost_pads.tolist())
         for player in self.players:
             output = "{}PLAYERS: {}\n".format(output, player)
 
