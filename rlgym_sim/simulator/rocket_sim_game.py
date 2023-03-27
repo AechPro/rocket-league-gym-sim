@@ -43,8 +43,6 @@ class RocketSimGame(object):
         for car in self.arena.get_cars():
             self.arena.remove_car(car)
 
-        self.blue_score = 0
-        self.orange_score = 0
         self.team_size = team_size
         self.tick_skip = tick_skip
         self.spawn_opponents = spawn_opponents
@@ -105,7 +103,7 @@ class RocketSimGame(object):
                                   up=rsim.Vec(*mtx[:, 2]))
 
                 car_state.rot_mat = rot
-                car_state.boost = player_state_vals[-1]
+                car_state.boost = player_state_vals[-1]*100
                 car.set_state(car_state)
                 car.set_controls(rsim.CarControls())
 

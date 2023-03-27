@@ -49,16 +49,17 @@ class Player(object):
         player_data.has_flip = car_state.air_time_since_jump < Player.JUMP_TIMER_SECONDS and not (car_state.has_flipped or car_state.has_double_jumped)
 
         rot_mat = self.rot_mat_mem
-        car_rot_mat = car_state.rot_mat
-        rot_mat[:, 0] = car_rot_mat[0].as_numpy()
-        rot_mat[:, 1] = car_rot_mat[1].as_numpy()
-        rot_mat[:, 2] = car_rot_mat[2].as_numpy()
+        car_rot_mat = car_state.rot_mat.as_numpy()
+        rot_mat[:, 0] = car_rot_mat[0]
+        rot_mat[:, 1] = car_rot_mat[1]
+        rot_mat[:, 2] = car_rot_mat[2]
         quaternion = math.rotation_to_quaternion(rot_mat)
 
         car_pos = car_state.pos
         car_vel = car_state.vel
         car_ang_vel = car_state.ang_vel
 
+        # CAR DATA
         car_vec_mem[0, 0] = car_pos.x
         car_vec_mem[0, 1] = car_pos.y
         car_vec_mem[0, 2] = car_pos.z
@@ -71,6 +72,8 @@ class Player(object):
         car_vec_mem[2, 1] = car_ang_vel.y
         car_vec_mem[2, 2] = car_ang_vel.z
 
+
+        # INVERTED CAR DATA
         car_vec_mem[3, 0] = -car_vec_mem[0, 0]
         car_vec_mem[3, 1] = -car_vec_mem[0, 1]
         car_vec_mem[3, 2] =  car_vec_mem[0, 2]

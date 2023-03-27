@@ -6,7 +6,6 @@ from rlgym_sim.utils import math
 import numpy as np
 from typing import Optional
 
-
 class PhysicsObject(object):
     def __init__(self, position=None, quaternion=None, linear_velocity=None, angular_velocity=None):
         self.position: np.ndarray = position if position is not None else np.zeros(3)
