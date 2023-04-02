@@ -8,7 +8,7 @@ from rlgym_sim.simulator import RocketSimGame
 
 
 class Gym(Env):
-    def __init__(self, match, copy_gamestate_every_step):
+    def __init__(self, match, copy_gamestate_every_step, dodge_deadzone):
         super().__init__()
 
         self._match = match
@@ -16,7 +16,7 @@ class Gym(Env):
         self.action_space = match.action_space
         self._prev_state = None
 
-        self._game = RocketSimGame(match, copy_gamestate=copy_gamestate_every_step)
+        self._game = RocketSimGame(match, copy_gamestate=copy_gamestate_every_step, dodge_deadzone=dodge_deadzone)
 
     def reset(self, return_info=False) -> Union[List, Tuple]:
         """

@@ -41,6 +41,21 @@ class PlayerData(object):
         self.inverted_car_data.copy(other.inverted_car_data)
 
 
+    def decode(self, car_data):
+        self.team_num = car_data[0][1]
+        self.match_goals = car_data[0][2]
+        self.match_saves = car_data[0][3]
+        self.match_shots = car_data[0][4]
+        self.match_demolishes = car_data[0][5]
+        self.boost_pickups = car_data[0][6]
+        self.is_demoed = car_data[0][7]
+        self.on_ground = car_data[0][8]
+        self.ball_touched = car_data[0][9]
+        self.boost_amount = car_data[0][10]/100
+
+        self.car_data.decode_data(car_data[0][11:36])
+        self.inverted_car_data.decode_data(car_data[1][11:36])
+
     def __str__(self):
         output = "****PLAYER DATA OBJECT****\n" \
                  "Match Goals: {}\n" \

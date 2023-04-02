@@ -16,6 +16,7 @@ def make(game_speed: int = 100,
          gravity: float = 1,
          boost_consumption: float = 1,
          copy_gamestate_every_step = True,
+         dodge_deadzone = 0.5,
          terminal_conditions: List[object] = (common_conditions.TimeoutCondition(225), common_conditions.GoalScoredCondition()),
          reward_fn: object = DefaultReward(),
          obs_builder: object = DefaultObs(),
@@ -28,6 +29,7 @@ def make(game_speed: int = 100,
     :param team_size: Cars per team
     :param gravity: Game gravity, 1 is normal gravity -- CURRENTLY UNSUPPORTED
     :param boost_consumption: Car boost consumption rate, 1 is normal consumption -- CURRENTLY UNSUPPORTED
+    :param dodge_deadzone: Dodge deadzone setting. Pitch must be >= this value while in the air and pressing jump to flip.
 
     :param copy_gamestate_every_step: Whether a new instance of a GameState object should be returned after every call
     to env.step(). Setting this to True is significantly slower but will allow users to compare GameStates between steps
@@ -55,4 +57,4 @@ def make(game_speed: int = 100,
                   boost_consumption=boost_consumption,
                   spawn_opponents=spawn_opponents)
 
-    return Gym(match, copy_gamestate_every_step=copy_gamestate_every_step)
+    return Gym(match, copy_gamestate_every_step=copy_gamestate_every_step, dodge_deadzone=dodge_deadzone)

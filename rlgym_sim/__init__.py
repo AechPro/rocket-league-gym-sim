@@ -1,4 +1,3 @@
 from .make import make
-import pyrocketsim as rsim
-rsim.init()
+import RocketSim as rsim
 

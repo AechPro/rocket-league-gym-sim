@@ -6,6 +6,7 @@ from rlgym_sim.utils import math
 import numpy as np
 from typing import Optional
 
+
 class PhysicsObject(object):
     def __init__(self, position=None, quaternion=None, linear_velocity=None, angular_velocity=None):
         self.position: np.ndarray = position if position is not None else np.zeros(3)
@@ -31,24 +32,19 @@ class PhysicsObject(object):
         self._has_computed_rot_mtx = other._has_computed_rot_mtx
         self._has_computed_euler_angles = other._has_computed_euler_angles
 
-    def decode_car_data(self, car_data: np.ndarray):
+    def decode_data(self, physics_data: np.ndarray):
         """
         Function to decode the physics state of a car from the game state array.
         :param car_data: Slice of game state array containing the car data to decode.
         """
-        self.position = car_data[:3]
-        self.quaternion = car_data[3:7]
-        self.linear_velocity = car_data[7:10]
-        self.angular_velocity = car_data[10:]
-
-    def decode_ball_data(self, ball_data: np.ndarray):
-        """
-        Function to decode the physics state of the ball from the game state array.
-        :param ball_data: Slice of game state array containing the ball data to decode.
-        """
-        self.position = ball_data[:3]
-        self.linear_velocity = ball_data[3:6]
-        self.angular_velocity = ball_data[6:9]
+        self.position = physics_data[:3]
+        self.quaternion = physics_data[3:7]
+        self.linear_velocity = physics_data[7:10]
+        self.angular_velocity = physics_data[10:13]
+        self._rotation_mtx = physics_data[13:22].reshape(3,3).transpose()
+        self._euler_angles = physics_data[22:]
+        self._has_computed_euler_angles = True
+        self._has_computed_rot_mtx = True
 
     def forward(self) -> np.ndarray:
         return self.rotation_mtx()[:, 0]

@@ -102,7 +102,6 @@ def quat_to_rot_mtx(quat: np.ndarray) -> np.ndarray:
 
 
 def rotation_to_quaternion(m: np.ndarray) -> np.ndarray:
-    # print("OTHER",other_rot_to_quat(m))
     trace = np.trace(m)
     q = np.zeros(4)
 
@@ -135,9 +134,6 @@ def rotation_to_quaternion(m: np.ndarray) -> np.ndarray:
             q[2] = (m[1, 2] + m[2, 1]) * inv_s
             q[3] = 0.5 * s
             q[0] = (m[1, 0] - m[0, 1]) * inv_s
-
-    # q[[0, 1, 2, 3]] = q[[3, 0, 1, 2]]
-
     return -q
 
 
