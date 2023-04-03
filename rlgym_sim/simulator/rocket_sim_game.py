@@ -46,7 +46,9 @@ class RocketSimGame(object):
         blue_spectator_ids = [i+1 for i in range(team_size)]
         blue_idx = 0
         for i in range(team_size):
-            self.arena.add_car(rsim.BLUE, rsim.OCTANE)
+            cfg = rsim.CarConfig(rsim.OCTANE)
+            cfg.dodge_deadzone = self.dodge_deadzone
+            self.arena.add_car(rsim.BLUE, cfg)
             car_id = self.arena.get_cars()[-1].id
             self.car_id_to_spectator_map[car_id] = blue_spectator_ids[blue_idx]
             self.spectator_to_car_id_map[blue_spectator_ids[blue_idx]] = car_id
@@ -56,7 +58,9 @@ class RocketSimGame(object):
             orange_spectator_ids = [5 + i for i in range(team_size)]
             orange_idx = 0
             for i in range(team_size):
-                self.arena.add_car(rsim.ORANGE, rsim.OCTANE)
+                cfg = rsim.CarConfig(rsim.OCTANE)
+                cfg.dodge_deadzone = self.dodge_deadzone
+                self.arena.add_car(rsim.ORANGE, cfg)
                 car_id = self.arena.get_cars()[-1].id
                 self.car_id_to_spectator_map[car_id] = orange_spectator_ids[orange_idx]
                 self.spectator_to_car_id_map[orange_spectator_ids[orange_idx]] = car_id
