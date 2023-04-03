@@ -15,17 +15,13 @@ class Player(object):
         self.inverted_quaternion = np.zeros(4)
 
         player_data = PlayerData()
-        car_state = car.get_state()
         if car.team == rsim.BLUE:
             player_data.team_num = common_values.BLUE_TEAM
         else:
             player_data.team_num = common_values.ORANGE_TEAM
 
         player_data.car_id = spectator_id
-
         self.data = player_data
-        last_touch_tick = car_state.last_hit_ball_tick
-        self.prev_touched_ticks = 0 if last_touch_tick == 18446744073709551615 else last_touch_tick
 
     def update(self, gym_data):
         car_state = self.car.get_state()

@@ -34,6 +34,9 @@ class RocketSimGame(object):
         for car in self.arena.get_cars():
             self.arena.remove_car(car)
 
+        self.spectator_to_car_id_map.clear()
+        self.car_id_to_spectator_map.clear()
+
         self.team_size = team_size
         self.tick_skip = tick_skip
         self.spawn_opponents = spawn_opponents
@@ -75,13 +78,15 @@ class RocketSimGame(object):
         ball_state.vel = rsim.Vec(state_vals[3], state_vals[4], state_vals[5])
         ball_state.ang_vel = rsim.Vec(state_vals[6], state_vals[7], state_vals[8])
         self.arena.ball.set_state(ball_state)
-        cars = self.cars
 
         idx = 9
         n_players = (len(state_vals) - idx) // player_len
 
         if n_players != self.n_agents:
-            self.new_game(self.tick_skip, n_players//2, self.spawn_opponents)
+            self.new_game(self.tick_skip, n_players//2 if self.spawn_opponents else n_players, self.spawn_opponents)
+
+        self.cars = self.arena.get_cars()
+        cars = self.cars
 
         if n_players > 0:
             for i in range(n_players):
@@ -137,6 +142,8 @@ class RocketSimGame(object):
 
         # Reset ball to kickoff position on goal to prevent goal counter from increasing more than once.
         if blue_score != self.blue_score or orange_score != self.orange_score:
+            self.blue_score = blue_score
+            self.orange_score = orange_score
             self.arena.ball.set_state(RocketSimGame.DEFAULT_BALL_STATE)
 
         boostpad_data = arena_state[1]

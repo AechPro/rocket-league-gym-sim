@@ -88,7 +88,6 @@ class Match(Environment):
         rewards = []
 
         self._reward_fn.pre_step(state)
-
         for i in range(len(state.players)):
             player = state.players[i]
 
