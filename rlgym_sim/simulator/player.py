@@ -15,7 +15,7 @@ class Player(object):
         self.inverted_quaternion = np.zeros(4)
 
         player_data = PlayerData()
-        if car.team == rsim.BLUE:
+        if car.team == rsim.Team.BLUE:
             player_data.team_num = common_values.BLUE_TEAM
         else:
             player_data.team_num = common_values.ORANGE_TEAM

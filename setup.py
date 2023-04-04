@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 from setuptools.command.install import install
 
 
-__version__ = "1.1.2"
+__version__ = "1.1.3"
 
 with open('README.md', 'r') as readme_file:
     long_description = readme_file.read()
@@ -24,7 +24,7 @@ setup(
     install_requires=[
         'gym>=0.17',
         'numpy>=1.19',
-        'RocketSim @ git+https://github.com/mtheall/RocketSim@de1603e9a51996eca21b25b72d5b086d83fe75c1'
+        'RocketSim @ git+https://github.com/mtheall/RocketSim@39c54d27c23e273f348034cece22f806f70cf2c3'
     ],
     python_requires='>=3.7',
     cmdclass={'install': CustomInstall},
