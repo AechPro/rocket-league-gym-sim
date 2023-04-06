@@ -134,10 +134,7 @@ class RocketSimGame(object):
 
     def _build_gamestate(self):
         players = self.players
-        if self.copy_gamestate:
-            gamestate = GameState()
-        else:
-            gamestate = self.gamestate
+        gamestate = self.gamestate
         arena_state = self.arena.get_gym_state()
         gamestate.players = []
 
@@ -173,6 +170,9 @@ class RocketSimGame(object):
             player = players[int(player_data[0][0])]
             player.update(player_data)
             gamestate.players[self.spectator_to_ordered_list_map[player.data.car_id]] = player.data
+
+        if self.copy_gamestate:
+            return GameState(other=gamestate)
 
         return gamestate
 
