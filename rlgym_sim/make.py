@@ -9,8 +9,7 @@ from rlgym_sim.utils.action_parsers import DefaultAction
 from rlgym_sim.utils.state_setters import DefaultState
 
 
-def make(game_speed: int = 100,
-         tick_skip: int = 8,
+def make(tick_skip: int = 8,
          spawn_opponents: bool = False,
          team_size: int = 1,
          gravity: float = 1,
@@ -23,7 +22,6 @@ def make(game_speed: int = 100,
          action_parser: object = DefaultAction(),
          state_setter: object = DefaultState()):
     """
-    :param game_speed: The speed the physics will run at, leave it at 100 unless your game can't run at over 240fps
     :param tick_skip: The amount of physics ticks your action will be repeated for
     :param spawn_opponents: Whether you want opponents or not
     :param team_size: Cars per team
@@ -52,7 +50,6 @@ def make(game_speed: int = 100,
                   state_setter=state_setter,
                   team_size=team_size,
                   tick_skip=tick_skip,
-                  game_speed=game_speed,
                   gravity=gravity,
                   boost_consumption=boost_consumption,
                   spawn_opponents=spawn_opponents)

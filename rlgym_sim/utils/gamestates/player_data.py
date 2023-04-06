@@ -48,9 +48,9 @@ class PlayerData(object):
         self.match_shots = car_data[0][4]
         self.match_demolishes = car_data[0][5]
         self.boost_pickups = car_data[0][6]
-        self.is_demoed = car_data[0][7]
-        self.on_ground = car_data[0][8]
-        self.ball_touched = car_data[0][9]
+        self.is_demoed = car_data[0][7] == 1.0
+        self.on_ground = car_data[0][8] == 1.0
+        self.ball_touched = car_data[0][9] == 1.0
         self.boost_amount = car_data[0][10]/100
 
         self.car_data.decode_data(car_data[0][11:36])

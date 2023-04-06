@@ -21,13 +21,11 @@ class Match(Environment):
                  state_setter,
                  team_size=1,
                  tick_skip=8,
-                 game_speed=100,
                  gravity=1,
                  boost_consumption=1,
                  spawn_opponents=False):
         super().__init__()
 
-        self._game_speed = game_speed
         self._gravity = gravity
         self._boost_consumption = boost_consumption
         self._team_size = team_size
@@ -113,10 +111,6 @@ class Match(Environment):
         current_score = state.blue_score - state.orange_score
         return current_score - self._initial_score
 
-    def parse_state(self, state_str: List[float]) -> GameState:
-        state = GameState(state_str)
-        return state
-
     def parse_actions(self, actions: Any, state: GameState) -> np.ndarray:
         # Prevent people from accidentally modifying numpy arrays inside the ActionParser
         if isinstance(actions, np.ndarray):
@@ -142,13 +136,10 @@ class Match(Environment):
         return [self._team_size,
                 1 if self._spawn_opponents else 0,
                 self._tick_skip,
-                self._game_speed,
                 self._gravity,
                 self._boost_consumption]
 
-    def update_settings(self, game_speed=None, gravity=None, boost_consumption=None):
-        if game_speed is not None:
-            self._game_speed = game_speed
+    def update_settings(self, gravity=None, boost_consumption=None):
         if gravity is not None:
             self._gravity = gravity
         if boost_consumption is not None:

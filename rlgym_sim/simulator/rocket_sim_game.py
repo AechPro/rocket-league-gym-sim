@@ -22,6 +22,7 @@ class RocketSimGame(object):
         self.car_index_map = {}
         self.spectator_to_car_id_map = {}
         self.car_id_to_spectator_map = {}
+        self.spectator_to_ordered_list_map = {}
         self.cars = []
 
         self.blue_score = 0
@@ -31,7 +32,8 @@ class RocketSimGame(object):
         self.new_game(self.tick_skip, self.team_size, self.spawn_opponents)
 
     def new_game(self, tick_skip, team_size, spawn_opponents):
-        for car in self.arena.get_cars():
+        cars = self.arena.get_cars()
+        for car in cars:
             self.arena.remove_car(car)
 
         self.spectator_to_car_id_map.clear()
@@ -42,28 +44,33 @@ class RocketSimGame(object):
         self.spawn_opponents = spawn_opponents
         self.n_agents = team_size*2 if spawn_opponents else team_size
 
-        # Two loops here so blue team is always the first half of the list
+        # Two loops here so we can make sure the blue cars are always in the first half of the gamestate players list.
         blue_spectator_ids = [i+1 for i in range(team_size)]
+        orange_spectator_ids = [5 + i for i in range(team_size)]
+        orange_idx = 0
         blue_idx = 0
+        spectator_order_idx = 0
         for i in range(team_size):
-            cfg = rsim.CarConfig(rsim.CarConfig.OCTANE)
-            cfg.dodge_deadzone = self.dodge_deadzone
-            car = self.arena.add_car(rsim.Team.BLUE, cfg)
-            car_id = car.id
-            self.car_id_to_spectator_map[car_id] = blue_spectator_ids[blue_idx]
-            self.spectator_to_car_id_map[blue_spectator_ids[blue_idx]] = car_id
+            blue_cfg = rsim.CarConfig(rsim.CarConfig.OCTANE)
+            blue_cfg.dodge_deadzone = self.dodge_deadzone
+            blue_car = self.arena.add_car(rsim.Team.BLUE, blue_cfg)
+            blue_car_id = blue_car.id
+            self.car_id_to_spectator_map[blue_car_id] = blue_spectator_ids[blue_idx]
+            self.spectator_to_car_id_map[blue_spectator_ids[blue_idx]] = blue_car_id
+            self.spectator_to_ordered_list_map[blue_spectator_ids[blue_idx]] = spectator_order_idx
+            spectator_order_idx += 1
             blue_idx += 1
 
         if spawn_opponents:
-            orange_spectator_ids = [5 + i for i in range(team_size)]
-            orange_idx = 0
             for i in range(team_size):
-                cfg = rsim.CarConfig(rsim.CarConfig.OCTANE)
-                cfg.dodge_deadzone = self.dodge_deadzone
-                car = self.arena.add_car(rsim.Team.ORANGE,  cfg)
-                car_id = car.id
-                self.car_id_to_spectator_map[car_id] = orange_spectator_ids[orange_idx]
-                self.spectator_to_car_id_map[orange_spectator_ids[orange_idx]] = car_id
+                orange_cfg = rsim.CarConfig(rsim.CarConfig.OCTANE)
+                orange_cfg.dodge_deadzone = self.dodge_deadzone
+                orange_car = self.arena.add_car(rsim.Team.ORANGE, orange_cfg)
+                orange_car_id = orange_car.id
+                self.car_id_to_spectator_map[orange_car_id] = orange_spectator_ids[orange_idx]
+                self.spectator_to_car_id_map[orange_spectator_ids[orange_idx]] = orange_car_id
+                self.spectator_to_ordered_list_map[orange_spectator_ids[orange_idx]] = spectator_order_idx
+                spectator_order_idx += 1
                 orange_idx += 1
 
         self.players.clear()
@@ -89,9 +96,7 @@ class RocketSimGame(object):
         if n_players != self.n_agents:
             self.new_game(self.tick_skip, n_players//2 if self.spawn_opponents else n_players, self.spawn_opponents)
 
-        self.cars = self.arena.get_cars()
         cars = self.cars
-
         if n_players > 0:
             for i in range(n_players):
                 start = idx + i*player_len
@@ -138,7 +143,10 @@ class RocketSimGame(object):
 
         game_data = arena_state[0]
         gamestate.game_type = game_data[0]
-        gamestate.last_touch = game_data[1]
+        last_touch = int(game_data[1])
+        if last_touch != 0:
+            last_touch = self.car_id_to_spectator_map[last_touch]
+        gamestate.last_touch = last_touch
 
         blue_score, orange_score = game_data[2], game_data[3]
         gamestate.blue_score = blue_score
@@ -158,11 +166,13 @@ class RocketSimGame(object):
         inverted_ball_data = arena_state[2][1]
         gamestate.ball.decode_data(ball_data)
         gamestate.inverted_ball.decode_data(inverted_ball_data)
+
+        gamestate.players = [None for _ in range(self.n_agents)]
         for i in range(3, len(arena_state)):
             player_data = arena_state[i]
             player = players[int(player_data[0][0])]
             player.update(player_data)
-            gamestate.players.append(player.data)
+            gamestate.players[self.spectator_to_ordered_list_map[player.data.car_id]] = player.data
 
         return gamestate
 
