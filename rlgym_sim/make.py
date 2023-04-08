@@ -7,13 +7,14 @@ from rlgym_sim.utils.reward_functions import DefaultReward
 from rlgym_sim.utils.obs_builders import DefaultObs
 from rlgym_sim.utils.action_parsers import DefaultAction
 from rlgym_sim.utils.state_setters import DefaultState
+from rlgym_sim.utils import common_values
 
 
 def make(tick_skip: int = 8,
          spawn_opponents: bool = False,
          team_size: int = 1,
-         gravity: float = 1,
-         boost_consumption: float = 1,
+         gravity: float = common_values.GRAVITY_Z,
+         boost_consumption: float = common_values.BOOST_CONSUMPTION,
          copy_gamestate_every_step = True,
          dodge_deadzone = 0.8,
          terminal_conditions: List[object] = (common_conditions.TimeoutCondition(225), common_conditions.GoalScoredCondition()),
@@ -49,9 +50,7 @@ def make(tick_skip: int = 8,
                   action_parser=action_parser,
                   state_setter=state_setter,
                   team_size=team_size,
-                  tick_skip=tick_skip,
-                  gravity=gravity,
-                  boost_consumption=boost_consumption,
                   spawn_opponents=spawn_opponents)
 
-    return Gym(match, copy_gamestate_every_step=copy_gamestate_every_step, dodge_deadzone=dodge_deadzone)
+    return Gym(match, tick_skip=tick_skip, gravity=gravity, boost_consumption=boost_consumption,
+               copy_gamestate_every_step=copy_gamestate_every_step, dodge_deadzone=dodge_deadzone)

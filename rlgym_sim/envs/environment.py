@@ -7,11 +7,7 @@ class Environment:
         self.action_space = None
         self.agents = None
         self.bots = None
-        self._team_size = None
-
-    @abstractmethod
-    def get_config(self):
-        raise NotImplementedError
+        self.team_size = None
 
     @abstractmethod
     def episode_reset(self, initial_state):
@@ -30,14 +26,6 @@ class Environment:
         raise NotImplementedError
 
     @abstractmethod
-    def parse_state(self, state_string):
-        raise NotImplementedError
-
-    @abstractmethod
     def format_actions(self, actions):
-        raise NotImplementedError
-
-    @abstractmethod
-    def update_settings(self, **kwargs):
         raise NotImplementedError
 

@@ -20,17 +20,11 @@ class Match(Environment):
                  action_parser,
                  state_setter,
                  team_size=1,
-                 tick_skip=8,
-                 gravity=1,
-                 boost_consumption=1,
                  spawn_opponents=False):
         super().__init__()
 
-        self._gravity = gravity
-        self._boost_consumption = boost_consumption
-        self._team_size = team_size
-        self._spawn_opponents = spawn_opponents
-        self._tick_skip = tick_skip
+        self.team_size = team_size
+        self.spawn_opponents = spawn_opponents
         self._reward_fn = reward_function
         self._terminal_conditions = terminal_conditions
         self._obs_builder = obs_builder
@@ -40,7 +34,7 @@ class Match(Environment):
         if type(terminal_conditions) not in (tuple, list):
             self._terminal_conditions = [terminal_conditions, ]
 
-        self.agents = self._team_size * 2 if self._spawn_opponents else self._team_size
+        self.agents = self.team_size * 2 if self.spawn_opponents else self.team_size
 
         self.observation_space = None
         self._auto_detect_obs_space()
@@ -128,27 +122,14 @@ class Match(Environment):
         return acts
 
     def get_reset_state(self) -> list:
-        new_state = self._state_setter.build_wrapper(self._team_size, self._spawn_opponents)
+        new_state = self._state_setter.build_wrapper(self.team_size, self.spawn_opponents)
         self._state_setter.reset(new_state)
         return new_state.format_state()
-
-    def get_config(self):
-        return [self._team_size,
-                1 if self._spawn_opponents else 0,
-                self._tick_skip,
-                self._gravity,
-                self._boost_consumption]
-
-    def update_settings(self, gravity=None, boost_consumption=None):
-        if gravity is not None:
-            self._gravity = gravity
-        if boost_consumption is not None:
-            self._boost_consumption = boost_consumption
 
     def _auto_detect_obs_space(self):
         from rlgym_sim.utils.gamestates.player_data import PlayerData
 
-        num_cars = self._team_size*2 if self._spawn_opponents else self._team_size
+        num_cars = self.team_size * 2 if self.spawn_opponents else self.team_size
         empty_player_packets = []
         for i in range(num_cars):
             player_packet = PlayerData()

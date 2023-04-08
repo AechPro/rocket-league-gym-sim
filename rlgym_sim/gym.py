@@ -2,13 +2,14 @@
     The Rocket League gym environment.
 """
 from typing import List, Union, Tuple, Dict, Any
-import numpy as np
 from gym import Env
 from rlgym_sim.simulator import RocketSimGame
+import RocketSim as rsim
 
 
 class Gym(Env):
-    def __init__(self, match, copy_gamestate_every_step, dodge_deadzone):
+    def __init__(self, match, copy_gamestate_every_step, dodge_deadzone,
+                 tick_skip, gravity, boost_consumption):
         super().__init__()
 
         self._match = match
@@ -16,7 +17,10 @@ class Gym(Env):
         self.action_space = match.action_space
         self._prev_state = None
 
-        self._game = RocketSimGame(match, copy_gamestate=copy_gamestate_every_step, dodge_deadzone=dodge_deadzone)
+        self._game = RocketSimGame(match,
+                                   copy_gamestate=copy_gamestate_every_step,
+                                   dodge_deadzone=dodge_deadzone,
+                                   tick_skip=tick_skip, gravity=gravity, boost_consumption=boost_consumption)
 
     def reset(self, return_info=False) -> Union[List, Tuple]:
         """
@@ -70,14 +74,25 @@ class Gym(Env):
     def close(self):
         pass
 
-    def update_settings(self, game_speed=None, gravity=None, boost_consumption=None):
+    def update_settings(self, gravity=None, boost_consumption=None, tick_skip=None):
         """
-        Updates the specified RLGym instance settings
+        Updates the specified RocketSim instance settings
 
-        :param game_speed: The speed the physics will run at, leave it at 100 unless your game can't run at over 240fps
-        :param gravity:
-        :param boost_consumption:
+        :param gravity: Change in z velocity per second. Should be negative. Default -650.
+        :param boost_consumption: Boost consumed per second of holding the button. Default 33.3.
+        :param tick_skip: Number of physics ticks the simulator will be advanced with the current controls before a
+         `GameState` is returned at each call to `step()`.
         """
 
-        #TODO: implement this
-        pass
+        mutator_cfg = self._game.arena.get_mutator_config()
+        if gravity is not None:
+            mutator_cfg.gravity = rsim.Vec(0, 0, gravity)
+
+        if boost_consumption is not None:
+            mutator_cfg.boost_used_per_second = boost_consumption
+
+        if tick_skip is not None:
+            self._game.tick_skip = tick_skip
+            self._match.tick_skip = tick_skip
+
+        self._game.arena.set_mutator_config(mutator_cfg)
