@@ -5,6 +5,7 @@ from typing import List, Union, Tuple, Dict, Any
 from gym import Env
 from rlgym_sim.simulator import RocketSimGame
 import RocketSim as rsim
+from rlgym_sim.utils import common_values
 
 
 class Gym(Env):
@@ -20,7 +21,9 @@ class Gym(Env):
         self._game = RocketSimGame(match,
                                    copy_gamestate=copy_gamestate_every_step,
                                    dodge_deadzone=dodge_deadzone,
-                                   tick_skip=tick_skip, gravity=gravity, boost_consumption=boost_consumption)
+                                   tick_skip=tick_skip)
+
+        self.update_settings(gravity=gravity, boost_consumption=boost_consumption, tick_skip=tick_skip)
 
     def reset(self, return_info=False) -> Union[List, Tuple]:
         """
@@ -78,18 +81,18 @@ class Gym(Env):
         """
         Updates the specified RocketSim instance settings
 
-        :param gravity: Change in z velocity per second. Should be negative. Default -650.
-        :param boost_consumption: Boost consumed per second of holding the button. Default 33.3.
+        :param gravity: Scalar to be multiplied by in-game gravity. Default 1.
+        :param boost_consumption: Scalar to be multiplied by default boost consumption rate. Default 1.
         :param tick_skip: Number of physics ticks the simulator will be advanced with the current controls before a
          `GameState` is returned at each call to `step()`.
         """
 
         mutator_cfg = self._game.arena.get_mutator_config()
         if gravity is not None:
-            mutator_cfg.gravity = rsim.Vec(0, 0, gravity)
+            mutator_cfg.gravity = rsim.Vec(0, 0, common_values.GRAVITY_Z*gravity)
 
         if boost_consumption is not None:
-            mutator_cfg.boost_used_per_second = boost_consumption
+            mutator_cfg.boost_used_per_second = common_values.BOOST_CONSUMED_PER_SECOND*boost_consumption
 
         if tick_skip is not None:
             self._game.tick_skip = tick_skip

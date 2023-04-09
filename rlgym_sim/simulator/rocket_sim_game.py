@@ -11,17 +11,11 @@ class RocketSimGame(object):
     def __init__(self, match,
                  copy_gamestate=True,
                  dodge_deadzone=0.5,
-                 tick_skip=8,
-                 gravity=common_values.GRAVITY_Z,
-                 boost_consumption=common_values.BOOST_CONSUMPTION):
+                 tick_skip=8):
 
         self.copy_gamestate = copy_gamestate
 
         self.arena = rsim.Arena(rsim.GameMode.SOCCAR)
-        cfg = self.arena.get_mutator_config()
-        cfg.gravity = rsim.Vec(0,0,gravity)
-        cfg.boost_used_per_second = boost_consumption
-        self.arena.set_mutator_config(cfg)
 
         self.tick_skip = tick_skip
         self.team_size = match.team_size
