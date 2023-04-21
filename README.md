@@ -8,7 +8,7 @@ This project requires you to install [python bindings](https://github.com/mtheal
 
 ## INSTALLATION
 1. You will need c++20 build tools
-2. Build RocketSim and install the Python bindings via `pip install git+https://github.com/mtheall/RocketSim@feb9f3e50b9526461c142541a8f51e63764014e8` 
+2. Build RocketSim and install the Python bindings via `pip install git+https://github.com/mtheall/RocketSim@ec40cc77e81ccc8690330f7a1f759c56d1b7b80e` 
 3. Install this project with pip via `pip install git+https://github.com/AechPro/rocket-league-gym-sim@main`
 4. Build and run the [asset dumper](https://github.com/ZealanL/RLArenaCollisionDumper)
 5. Move the dumped assets to the top level of your project directory
