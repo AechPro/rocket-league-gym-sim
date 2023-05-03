@@ -41,7 +41,7 @@ class RocketSimGame(object):
 
         self.team_size = team_size
         self.tick_skip = tick_skip
-        self.spawn_opponents = spawn_opponents
+        # self.spawn_opponents = spawn_opponents
         self.n_agents = team_size*2 if spawn_opponents else team_size
 
         # Two loops here so we can make sure the blue cars are always in the first half of the gamestate players list.
@@ -94,7 +94,10 @@ class RocketSimGame(object):
         n_players = (len(state_vals) - idx) // player_len
 
         if n_players != self.n_agents:
-            self.new_game(self.tick_skip, n_players//2 if self.spawn_opponents else n_players, self.spawn_opponents)
+            if n_players == 1:
+                self.new_game(self.tick_skip, 1, 0)
+            else:
+                self.new_game(self.tick_skip, n_players//2 if self.spawn_opponents else n_players, self.spawn_opponents)
 
         cars = self.cars
         if n_players > 0:
