@@ -10,7 +10,7 @@ class RocketSimGame(object):
 
     def __init__(self, match,
                  copy_gamestate=True,
-                 dodge_deadzone=0.5,
+                 dodge_deadzone=0.8,
                  tick_skip=8):
 
         self.copy_gamestate = copy_gamestate
@@ -133,8 +133,10 @@ class RocketSimGame(object):
     def step(self, controls):
         self._set_controls(controls)
 
+        self.arena.step(1)
         gamestate = self._build_gamestate()
-        self.arena.step(self.tick_skip)
+        if self.tick_skip > 1:
+            self.arena.step(self.tick_skip-1)
 
         return gamestate
 
