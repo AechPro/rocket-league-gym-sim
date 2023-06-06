@@ -96,6 +96,10 @@ class RocketSimGame(object):
         ball_state.ang_vel = rsim.Vec(state_vals[6], state_vals[7], state_vals[8])
         self.arena.ball.set_state(ball_state)
 
+        prev_car_states = {}
+        for car in self.cars:
+            prev_car_states[self.car_id_to_spectator_map[car.id]] = car.get_state()
+
         idx = 9
         n_players = (len(state_vals) - idx) // player_len
 
@@ -112,7 +116,12 @@ class RocketSimGame(object):
                 spectator_id = int(player_state_vals[0])
                 car_id = self.spectator_to_car_id_map[spectator_id]
                 car = cars[self.car_index_map[car_id]]
-                car_state = rsim.CarState()
+
+                if spectator_id in prev_car_states.keys():
+                    car_state = prev_car_states[spectator_id]
+                else:
+                    car_state = rsim.CarState()
+
                 car_state.pos = rsim.Vec(player_state_vals[1], player_state_vals[2], player_state_vals[3])
                 car_state.vel = rsim.Vec(player_state_vals[4], player_state_vals[5], player_state_vals[6])
                 car_state.ang_vel = rsim.Vec(player_state_vals[7], player_state_vals[8], player_state_vals[9])
@@ -144,9 +153,11 @@ class RocketSimGame(object):
         players = self.players
         gamestate = self.gamestate
         arena_state = self.arena.get_gym_state()
+
         gamestate.players = []
 
         game_data = arena_state[0]
+
         gamestate.game_type = game_data[0]
         last_touch = int(game_data[1])
         if last_touch != 0:
@@ -169,12 +180,22 @@ class RocketSimGame(object):
 
         ball_data = arena_state[2][0]
         inverted_ball_data = arena_state[2][1]
+
+        if np.isnan(arena_state[2]).any():
+            raise ValueError("!!DETECTED NaN VALUE IN BALL DATA!! {}\n"
+                             "DID YOU STATE SET MULTIPLE OBJECTS IN THE SAME LOCATION?".format(arena_state[2]))
+
         gamestate.ball.decode_data(ball_data)
         gamestate.inverted_ball.decode_data(inverted_ball_data)
 
         gamestate.players = [None for _ in range(self.n_agents)]
         for i in range(3, len(arena_state)):
             player_data = arena_state[i]
+
+            if np.isnan(player_data).any():
+                raise ValueError("!!DETECTED NaN VALUE IN PLAYER DATA!! {}\n"
+                                 "DID YOU STATE SET MULTIPLE OBJECTS IN THE SAME LOCATION?".format(player_data))
+
             player = players[int(player_data[0][0])]
             player.update(player_data)
             gamestate.players[self.spectator_to_ordered_list_map[player.data.car_id]] = player.data
