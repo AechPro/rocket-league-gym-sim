@@ -131,6 +131,15 @@ class RocketSimGame(object):
 
                 car_state.rot_mat = rot
                 car_state.boost = player_state_vals[-1]*100
+
+                # Simulate RLGym's component setting
+                if car_state.has_flipped: # dodge component
+                    car_state.flip_time = 1 
+                car_state.is_auto_flipping = False # flip component
+                car_state.auto_flip_timer = 0
+                car_state.is_jumping = False # jump component
+                car_state.time_spent_boosting = 0 # boost component
+
                 car.set_state(car_state)
                 car.set_controls(rsim.CarControls())
 
