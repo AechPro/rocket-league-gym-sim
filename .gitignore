@@ -128,3 +128,10 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+/collision_meshes
+rlviser*
+assets.path
+/assets
+umodel
+settings.txt

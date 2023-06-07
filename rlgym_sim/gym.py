@@ -7,6 +7,11 @@ from rlgym_sim.simulator import RocketSimGame
 import RocketSim as rsim
 from rlgym_sim.utils import common_values
 
+try:
+    import rlviser_py as rlviser
+    rlviser.set_boost_pad_locations(common_values.BOOST_LOCATIONS)
+except ImportError:
+    rlviser = None
 
 class Gym(Env):
     def __init__(self, match, copy_gamestate_every_step, dodge_deadzone,
@@ -73,9 +78,19 @@ class Gym(Env):
         }
 
         return obs, reward, done, info
+    
+    def render(self):
+        if rlviser is None:
+            raise ImportError("rlviser_py not installed. Please install rlviser_py to use render()")
+
+        if self._prev_state is None:
+            return
+
+        rlviser.render_rlgym(self._prev_state)
 
     def close(self):
-        pass
+        if rlviser is not None:
+            rlviser.quit()
 
     def update_settings(self, gravity=None, boost_consumption=None, tick_skip=None):
         """
