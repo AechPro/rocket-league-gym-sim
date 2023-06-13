@@ -10,7 +10,7 @@ class RocketSimGame(object):
 
     def __init__(self, match,
                  copy_gamestate=True,
-                 dodge_deadzone=0.8,
+                 dodge_deadzone=0.5,
                  tick_skip=8):
 
         self.copy_gamestate = copy_gamestate
