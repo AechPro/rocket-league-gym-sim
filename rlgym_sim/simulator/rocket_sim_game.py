@@ -1,8 +1,11 @@
-import RocketSim as rsim
-from rlgym_sim.utils.gamestates import GameState, PhysicsObject
-from rlgym_sim.utils import common_values, math
-from rlgym_sim.simulator import Player
+from time import sleep, time_ns
+
 import numpy as np
+import RocketSim as rsim
+
+from rlgym_sim.simulator import Player
+from rlgym_sim.utils import common_values, math
+from rlgym_sim.utils.gamestates import GameState, PhysicsObject
 
 
 class RocketSimGame(object):
@@ -36,6 +39,7 @@ class RocketSimGame(object):
 
         self.gamestate = GameState()
         self.new_game(self.tick_skip, self.team_size, self.spawn_opponents)
+        self.last_time = time_ns()
 
     def new_game(self, tick_skip, team_size, spawn_opponents):
         cars = self.arena.get_cars()
@@ -148,14 +152,32 @@ class RocketSimGame(object):
 
         return self._build_gamestate()
 
-    def step(self, controls):
+    def step(self, controls, dt, render_callback):
         self._set_controls(controls)
 
+        if dt is None:
+            self.arena.step(1)
+            gamestate = self._build_gamestate()
+            if self.tick_skip > 1:
+                self.arena.step(self.tick_skip-1)
+        else:
+            gamestate = self.render_step(dt, render_callback)
+
+            if self.tick_skip > 1:
+                for _ in range(self.tick_skip-1):
+                    self.render_step(dt, render_callback)
+
+        return gamestate
+
+    def render_step(self, dt, render_callback):
+        current_time = time_ns()
+        time_diff = (current_time - self.last_time) / 1e9
+        if time_diff < dt:
+            sleep(time_diff)
+        self.last_time = current_time
         self.arena.step(1)
         gamestate = self._build_gamestate()
-        if self.tick_skip > 1:
-            self.arena.step(self.tick_skip-1)
-
+        render_callback(gamestate)
         return gamestate
 
     def _build_gamestate(self):

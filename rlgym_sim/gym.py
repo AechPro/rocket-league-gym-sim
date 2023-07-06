@@ -1,10 +1,12 @@
 """
     The Rocket League gym environment.
 """
-from typing import List, Union, Tuple, Dict, Any
-from gym import Env
-from rlgym_sim.simulator import RocketSimGame
+from typing import Any, Dict, List, Tuple, Union
+
 import RocketSim as rsim
+from gym import Env
+
+from rlgym_sim.simulator import RocketSimGame
 from rlgym_sim.utils import common_values
 
 try:
@@ -52,7 +54,7 @@ class Gym(Env):
             return obs, info
         return obs
 
-    def step(self, actions: Any) -> Tuple[List, List, bool, Dict]:
+    def step(self, actions: Any, dt=None) -> Tuple[List, List, bool, Dict]:
         """
         The step function will send the list of provided actions to the game, then advance the game forward by `tick_skip`
         physics ticks using that action. The game is then paused, and the current state is sent back to rlgym_sim This is
@@ -65,7 +67,7 @@ class Gym(Env):
 
         actions = self._match.format_actions(self._match.parse_actions(actions, self._prev_state))
 
-        state = self._game.step(actions)
+        state = self._game.step(actions, dt, self.render)
 
         obs = self._match.build_observations(state)
         done = self._match.is_done(state)
@@ -79,14 +81,16 @@ class Gym(Env):
 
         return obs, reward, done, info
     
-    def render(self):
+    def render(self, state=None):
         if rlviser is None:
             raise ImportError("rlviser_py not installed. Please install rlviser_py to use render()")
 
-        if self._prev_state is None:
-            return
+        if state is None:
+            if self._prev_state is None:
+                return
+            state = self._prev_state
 
-        rlviser.render_rlgym(self._prev_state)
+        rlviser.render_rlgym(state)
 
     def close(self):
         if rlviser is not None:
