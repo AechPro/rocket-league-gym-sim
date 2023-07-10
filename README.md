@@ -8,7 +8,7 @@ This project requires you to install [python bindings](https://github.com/mtheal
 
 ## INSTALLATION
 1. You will need c++20 build tools
-2. Build RocketSim and install the Python bindings via `pip install git+https://github.com/mtheall/RocketSim@1710e5d462a33bc3be3b0c8f52f7d6132e5d5257` 
+2. Build RocketSim and install the Python bindings via `pip install git+https://github.com/mtheall/RocketSim@89c5022b4c53c70562f63520e80dbaea40424ce3` 
 3. Install this project with pip via `pip install git+https://github.com/AechPro/rocket-league-gym-sim@main`
 4. Build and run the [asset dumper](https://github.com/ZealanL/RLArenaCollisionDumper)
 5. Move the dumped assets to the top level of your project directory
@@ -30,6 +30,5 @@ Thanks to the flexibility of the simulator, the following additional variables h
 - `dodge_deadzone`: Sets the threshold value that `pitch` must meet in order for a dodge to occur when jumping in the air.
 
 ## KNOWN ISSUES
-- Setting the gravity and boost consumption values through `rlgym.update_settings()` does not work and is not supported.
 - A variety of classes in `rlgym_utils` such as `SB3MultipleInstanceEnv` imports the `rlgym` library to build environments, so you will need to replace those imports yourself and remove the misc launch options listed above if you want to use SB3 with `rlgym_sim`. Note also that `SB3MultipleInstanceEnv` waits 60 seconds between launching clients by default because multiple Rocket League clients will break each other if launched simultaneously. This is not the case with RocketSim, so you can remove that delay.
 - the `PlayerData` objects do not track `match_saves` or `match_shots` yet.
