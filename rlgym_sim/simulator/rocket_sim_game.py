@@ -11,8 +11,10 @@ class RocketSimGame(object):
     def __init__(self, match,
                  copy_gamestate=True,
                  dodge_deadzone=0.5,
-                 tick_skip=8):
+                 tick_skip=8,
+                 random_boost_pad_on_reset=False):
 
+        self.random_boost_pad_on_reset = random_boost_pad_on_reset
         self.copy_gamestate = copy_gamestate
 
         self.arena = rsim.Arena(rsim.GameMode.SOCCAR)
@@ -144,7 +146,15 @@ class RocketSimGame(object):
                 car.set_controls(rsim.CarControls())
 
         for pad in self.arena.get_boost_pads():
-            pad.set_state(rsim.BoostPadState())
+            if self.random_boost_pad_on_reset:
+                is_active = np.random.choice([False, True])
+                cooldown = 0
+                if not is_active:
+                    cooldown_max = 10 if pad.is_big else 4
+                    cooldown = np.random.random() * cooldown_max
+                pad.set_state(rsim.BoostPadState(is_active=is_active, cooldown=cooldown))
+            else:
+                pad.set_state(rsim.BoostPadState())
 
         return self._build_gamestate()
 
