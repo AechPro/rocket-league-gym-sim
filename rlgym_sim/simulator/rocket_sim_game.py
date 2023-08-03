@@ -150,8 +150,7 @@ class RocketSimGame(object):
                 is_active = np.random.choice([False, True])
                 cooldown = 0
                 if not is_active:
-                    cooldown_max = 10 if pad.is_big else 4
-                    cooldown = np.random.random() * cooldown_max
+                    cooldown = 10 if pad.is_big else 4
                 pad.set_state(rsim.BoostPadState(is_active=is_active, cooldown=cooldown))
             else:
                 pad.set_state(rsim.BoostPadState())
