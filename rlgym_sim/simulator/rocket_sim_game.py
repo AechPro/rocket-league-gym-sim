@@ -146,7 +146,8 @@ class RocketSimGame(object):
                 car.set_controls(rsim.CarControls())
 
         for pad in self.arena.get_boost_pads():
-            if self.random_boost_pad_on_reset:
+            kickoff = state_vals[0] == state_vals[1] == 0
+            if self.random_boost_pad_on_reset and not kickoff:
                 is_active = np.random.choice([False, True])
                 cooldown = 0
                 if not is_active:
