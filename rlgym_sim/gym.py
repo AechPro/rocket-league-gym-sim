@@ -22,6 +22,7 @@ class Gym(Env):
         self.observation_space = match.observation_space
         self.action_space = match.action_space
         self._prev_state = None
+        self.rendered = False
 
         self._game = RocketSimGame(match,
                                    copy_gamestate=copy_gamestate_every_step,
@@ -86,10 +87,11 @@ class Gym(Env):
         if self._prev_state is None:
             return
 
+        self.rendered = True
         rlviser.render_rlgym(self._prev_state)
 
     def close(self):
-        if rlviser is not None:
+        if self.rendered:
             rlviser.quit()
 
     def update_settings(self, gravity=None, boost_consumption=None, tick_skip=None):
