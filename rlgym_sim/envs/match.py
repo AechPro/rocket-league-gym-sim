@@ -2,25 +2,30 @@
 The Match object.
 """
 
-from rlgym_sim.envs.environment import Environment
-from rlgym_sim.utils.gamestates import GameState
-from rlgym_sim.utils import common_values
+from typing import Any, List, Union
+
 import gym.spaces
 import numpy as np
-from typing import List, Union, Any
+
+from rlgym_sim.envs.environment import Environment
+from rlgym_sim.utils import common_values
+from rlgym_sim.utils.gamestates import GameState
+from rlgym_sim.utils.obs_builders.obs_builder import ObsBuilder
 
 
 class Match(Environment):
     MAX_TEAM_SIZE = 4
 
-    def __init__(self,
-                 reward_function,
-                 terminal_conditions,
-                 obs_builder,
-                 action_parser,
-                 state_setter,
-                 team_size=1,
-                 spawn_opponents=False):
+    def __init__(
+        self,
+        reward_function,
+        terminal_conditions,
+        obs_builder: ObsBuilder,
+        action_parser,
+        state_setter,
+        team_size=1,
+        spawn_opponents=False,
+    ):
         super().__init__()
 
         self.team_size = team_size
@@ -32,7 +37,9 @@ class Match(Environment):
         self._state_setter = state_setter
 
         if type(terminal_conditions) not in (tuple, list):
-            self._terminal_conditions = [terminal_conditions, ]
+            self._terminal_conditions = [
+                terminal_conditions,
+            ]
 
         self.agents = self.team_size * 2 if self.spawn_opponents else self.team_size
 
@@ -40,7 +47,7 @@ class Match(Environment):
         self._auto_detect_obs_space()
         self.action_space = self._action_parser.get_action_space()
 
-        self._prev_actions = np.zeros((Match.MAX_TEAM_SIZE*2, 8), dtype=float)
+        self._prev_actions = np.zeros((Match.MAX_TEAM_SIZE * 2, 8), dtype=float)
         self._spectator_ids = None
 
         self.last_touch = None
@@ -56,8 +63,8 @@ class Match(Environment):
         self.last_touch = None
         self._initial_score = initial_state.blue_score - initial_state.orange_score
 
-    def build_observations(self, state) -> Union[Any, List]:
-        observations = []
+    def build_observations(self, state: GameState):
+        observations: list[Any] = []
 
         self._obs_builder.pre_step(state)
 
@@ -71,10 +78,7 @@ class Match(Environment):
         else:
             self.last_touch = state.last_touch
 
-        if len(observations) == 1:
-            return observations[0]
-
-        return observations
+        return observations[0] if len(observations) == 1 else observations
 
     def get_rewards(self, state, done) -> Union[float, List]:
         rewards = []
@@ -84,9 +88,13 @@ class Match(Environment):
             player = state.players[i]
 
             if done:
-                reward = self._reward_fn.get_final_reward(player, state, self._prev_actions[i])
+                reward = self._reward_fn.get_final_reward(
+                    player, state, self._prev_actions[i]
+                )
             else:
-                reward = self._reward_fn.get_reward(player, state, self._prev_actions[i])
+                reward = self._reward_fn.get_reward(
+                    player, state, self._prev_actions[i]
+                )
 
             rewards.append(reward)
 
@@ -112,7 +120,7 @@ class Match(Environment):
         return self._action_parser.parse_actions(actions, state)
 
     def format_actions(self, actions: np.ndarray):
-        self._prev_actions[:len(actions)] = actions[:]
+        self._prev_actions[: len(actions)] = actions[:]
         acts = []
         for i in range(len(actions)):
             acts.append(float(self._spectator_ids[i]))
@@ -122,7 +130,9 @@ class Match(Environment):
         return acts
 
     def get_reset_state(self) -> list:
-        new_state = self._state_setter.build_wrapper(self.team_size, self.spawn_opponents)
+        new_state = self._state_setter.build_wrapper(
+            self.team_size, self.spawn_opponents
+        )
         self._state_setter.reset(new_state)
         return new_state.format_state()
 
@@ -145,6 +155,10 @@ class Match(Environment):
         if self.observation_space is None:
             self._obs_builder.reset(empty_game_state)
             self._obs_builder.pre_step(empty_game_state)
-            obs_shape = np.shape(self._obs_builder.build_obs(empty_player_packets[0], empty_game_state, prev_inputs))
+            obs_shape = np.shape(
+                self._obs_builder.build_obs(
+                    empty_player_packets[0], empty_game_state, prev_inputs
+                )
+            )
 
             self.observation_space = gym.spaces.Box(-np.inf, np.inf, shape=obs_shape)

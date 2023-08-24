@@ -1,16 +1,16 @@
 """
 The observation builder.
 """
-
 from abc import ABC, abstractmethod
-from rlgym_sim.utils.gamestates import PlayerData, GameState
+from typing import Any
+
 import gym
 import numpy as np
-from typing import Any
+
+from rlgym_sim.utils.gamestates import GameState, PlayerData
 
 
 class ObsBuilder(ABC):
-
     def __init__(self):
         pass
 
@@ -43,7 +43,12 @@ class ObsBuilder(ABC):
         pass
 
     @abstractmethod
-    def build_obs(self, player: PlayerData, state: GameState, previous_action: np.ndarray) -> Any:
+    def build_obs(
+        self,
+        player: PlayerData,
+        state: GameState,
+        previous_action: np.ndarray[float, Any],
+    ) -> Any:
         """
         Function to build observations for a policy. This is where all observations will be constructed every step and
         every reset. This function is given a player argument, and it is expected that the observation returned by this
@@ -57,5 +62,5 @@ class ObsBuilder(ABC):
         :param previous_action: The action taken at the previous environment step.
 
         :return: An observation for the player provided.
-        """
+        """  # noqa: E501
         raise NotImplementedError

@@ -1,18 +1,21 @@
-import RocketSim as rsim
-from rlgym_sim.utils.gamestates import GameState, PhysicsObject
-from rlgym_sim.utils import common_values, math
-from rlgym_sim.simulator import Player
 import numpy as np
+import RocketSim as rsim
+
+from rlgym_sim.simulator import Player
+from rlgym_sim.utils import common_values, math
+from rlgym_sim.utils.gamestates import GameState
 
 
 class RocketSimGame(object):
     DEFAULT_BALL_STATE = rsim.BallState()
 
-    def __init__(self, match,
-                 copy_gamestate=True,
-                 dodge_deadzone=0.5,
-                 tick_skip=8):
-
+    def __init__(
+        self,
+        match,
+        copy_gamestate: bool = True,
+        dodge_deadzone: float = 0.5,
+        tick_skip: int = 8,
+    ):
         self.copy_gamestate = copy_gamestate
 
         self.arena = rsim.Arena(rsim.GameMode.SOCCAR)
@@ -20,7 +23,7 @@ class RocketSimGame(object):
         self.tick_skip = tick_skip
         self.team_size = match.team_size
         self.spawn_opponents = match.spawn_opponents
-        self.n_agents = self.team_size*2 if self.spawn_opponents else self.team_size
+        self.n_agents = self.team_size * 2 if self.spawn_opponents else self.team_size
         self.dodge_deadzone = dodge_deadzone
 
         self.players = {}
@@ -48,10 +51,10 @@ class RocketSimGame(object):
         self.team_size = team_size
         self.tick_skip = tick_skip
         self.spawn_opponents = spawn_opponents
-        self.n_agents = team_size*2 if spawn_opponents else team_size
+        self.n_agents = team_size * 2 if spawn_opponents else team_size
 
         # Two loops here so we can make sure the blue cars are always in the first half of the gamestate players list.
-        blue_spectator_ids = [i+1 for i in range(team_size)]
+        blue_spectator_ids = [i + 1 for i in range(team_size)]
         orange_spectator_ids = [5 + i for i in range(team_size)]
         orange_idx = 0
         blue_idx = 0
@@ -63,7 +66,9 @@ class RocketSimGame(object):
             blue_car_id = blue_car.id
             self.car_id_to_spectator_map[blue_car_id] = blue_spectator_ids[blue_idx]
             self.spectator_to_car_id_map[blue_spectator_ids[blue_idx]] = blue_car_id
-            self.spectator_to_ordered_list_map[blue_spectator_ids[blue_idx]] = spectator_order_idx
+            self.spectator_to_ordered_list_map[
+                blue_spectator_ids[blue_idx]
+            ] = spectator_order_idx
             spectator_order_idx += 1
             blue_idx += 1
 
@@ -73,9 +78,15 @@ class RocketSimGame(object):
                 orange_cfg.dodge_deadzone = self.dodge_deadzone
                 orange_car = self.arena.add_car(rsim.Team.ORANGE, orange_cfg)
                 orange_car_id = orange_car.id
-                self.car_id_to_spectator_map[orange_car_id] = orange_spectator_ids[orange_idx]
-                self.spectator_to_car_id_map[orange_spectator_ids[orange_idx]] = orange_car_id
-                self.spectator_to_ordered_list_map[orange_spectator_ids[orange_idx]] = spectator_order_idx
+                self.car_id_to_spectator_map[orange_car_id] = orange_spectator_ids[
+                    orange_idx
+                ]
+                self.spectator_to_car_id_map[
+                    orange_spectator_ids[orange_idx]
+                ] = orange_car_id
+                self.spectator_to_ordered_list_map[
+                    orange_spectator_ids[orange_idx]
+                ] = spectator_order_idx
                 spectator_order_idx += 1
                 orange_idx += 1
 
@@ -104,14 +115,20 @@ class RocketSimGame(object):
         n_players = (len(state_vals) - idx) // player_len
 
         if n_players != self.n_agents:
-            self.new_game(self.tick_skip, n_players//2 if self.spawn_opponents else n_players, self.spawn_opponents)
+            self.new_game(
+                self.tick_skip,
+                n_players // 2 if self.spawn_opponents else n_players,
+                self.spawn_opponents,
+            )
 
         cars = self.cars
         if n_players > 0:
             for i in range(n_players):
-                start = idx + i*player_len
+                start = idx + i * player_len
                 stop = start + player_len
-                player_state_vals = state_vals[start:stop] #id, pos, lv, av, euler, boost
+                player_state_vals = state_vals[
+                    start:stop
+                ]  # id, pos, lv, av, euler, boost
 
                 spectator_id = int(player_state_vals[0])
                 car_id = self.spectator_to_car_id_map[spectator_id]
@@ -122,23 +139,29 @@ class RocketSimGame(object):
                 else:
                     car_state = rsim.CarState()
 
-                car_state.pos = rsim.Vec(player_state_vals[1], player_state_vals[2], player_state_vals[3])
-                car_state.vel = rsim.Vec(player_state_vals[4], player_state_vals[5], player_state_vals[6])
-                car_state.ang_vel = rsim.Vec(player_state_vals[7], player_state_vals[8], player_state_vals[9])
+                car_state.pos = rsim.Vec(
+                    player_state_vals[1], player_state_vals[2], player_state_vals[3]
+                )
+                car_state.vel = rsim.Vec(
+                    player_state_vals[4], player_state_vals[5], player_state_vals[6]
+                )
+                car_state.ang_vel = rsim.Vec(
+                    player_state_vals[7], player_state_vals[8], player_state_vals[9]
+                )
 
                 mtx = math.euler_to_rotation(player_state_vals[10:13])
-                rot = rsim.RotMat(*mtx.transpose().flatten()) # Bullet is row-major.
+                rot = rsim.RotMat(*mtx.transpose().flatten())  # Bullet is row-major.
 
                 car_state.rot_mat = rot
-                car_state.boost = player_state_vals[-1]*100
+                car_state.boost = player_state_vals[-1] * 100
 
                 # Simulate RLGym's component setting
-                if car_state.has_flipped: # dodge component
-                    car_state.flip_time = 1 
-                car_state.is_auto_flipping = False # flip component
+                if car_state.has_flipped:  # dodge component
+                    car_state.flip_time = 1
+                car_state.is_auto_flipping = False  # flip component
                 car_state.auto_flip_timer = 0
-                car_state.is_jumping = False # jump component
-                car_state.time_spent_boosting = 0 # boost component
+                car_state.is_jumping = False  # jump component
+                car_state.time_spent_boosting = 0  # boost component
 
                 car.set_state(car_state)
                 car.set_controls(rsim.CarControls())
@@ -154,7 +177,7 @@ class RocketSimGame(object):
         self.arena.step(1)
         gamestate = self._build_gamestate()
         if self.tick_skip > 1:
-            self.arena.step(self.tick_skip-1)
+            self.arena.step(self.tick_skip - 1)
 
         return gamestate
 
@@ -191,8 +214,12 @@ class RocketSimGame(object):
         inverted_ball_data = arena_state[2][1]
 
         if np.isnan(arena_state[2]).any():
-            raise ValueError("!!DETECTED NaN VALUE IN BALL DATA!! {}\n"
-                             "DID YOU STATE SET MULTIPLE OBJECTS IN THE SAME LOCATION?".format(arena_state[2]))
+            raise ValueError(
+                "!!DETECTED NaN VALUE IN BALL DATA!! {}\n"
+                "DID YOU STATE SET MULTIPLE OBJECTS IN THE SAME LOCATION?".format(
+                    arena_state[2]
+                )
+            )
 
         gamestate.ball.decode_data(ball_data)
         gamestate.inverted_ball.decode_data(inverted_ball_data)
@@ -202,12 +229,18 @@ class RocketSimGame(object):
             player_data = arena_state[i]
 
             if np.isnan(player_data).any():
-                raise ValueError("!!DETECTED NaN VALUE IN PLAYER DATA!! {}\n"
-                                 "DID YOU STATE SET MULTIPLE OBJECTS IN THE SAME LOCATION?".format(player_data))
+                raise ValueError(
+                    "!!DETECTED NaN VALUE IN PLAYER DATA!! {}\n"
+                    "DID YOU STATE SET MULTIPLE OBJECTS IN THE SAME LOCATION?".format(
+                        player_data
+                    )
+                )
 
             player = players[int(player_data[0][0])]
             player.update(player_data)
-            gamestate.players[self.spectator_to_ordered_list_map[player.data.car_id]] = player.data
+            gamestate.players[
+                self.spectator_to_ordered_list_map[player.data.car_id]
+            ] = player.data
 
         if self.copy_gamestate:
             return GameState(other=gamestate)
@@ -222,18 +255,18 @@ class RocketSimGame(object):
 
         for i in range(self.n_agents):
             car_controls = rsim.CarControls()
-            spectator_id = controls[i*n]
+            spectator_id = controls[i * n]
             car_id = spectator_map[spectator_id]
             cars_idx = car_index_map[car_id]
 
-            car_controls.throttle = controls[i*n+1]
-            car_controls.steer = controls[i*n+2]
-            car_controls.pitch = controls[i*n+3]
-            car_controls.yaw = controls[i*n+4]
-            car_controls.roll = controls[i*n+5]
-            car_controls.jump = controls[i*n+6] == 1
-            car_controls.boost = controls[i*n+7] == 1
-            car_controls.handbrake = controls[i*n+8] == 1
+            car_controls.throttle = controls[i * n + 1]
+            car_controls.steer = controls[i * n + 2]
+            car_controls.pitch = controls[i * n + 3]
+            car_controls.yaw = controls[i * n + 4]
+            car_controls.roll = controls[i * n + 5]
+            car_controls.jump = controls[i * n + 6] == 1
+            car_controls.boost = controls[i * n + 7] == 1
+            car_controls.handbrake = controls[i * n + 8] == 1
 
             cars[cars_idx].set_controls(car_controls)
 

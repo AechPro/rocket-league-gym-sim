@@ -136,3 +136,4 @@ assets.path
 umodel
 settings.txt
 .vscode/settings.json
+*.code-workspace
