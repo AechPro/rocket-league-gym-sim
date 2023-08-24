@@ -1,10 +1,10 @@
 from rlgym_sim.envs import Match
 from rlgym_sim.gym import Gym
 from rlgym_sim.utils import terminal_conditions as terminal_conditions
-from rlgym_sim.utils.action_parsers import DefaultAction
-from rlgym_sim.utils.obs_builders import DefaultObs
-from rlgym_sim.utils.reward_functions import DefaultReward
-from rlgym_sim.utils.state_setters import DefaultState
+from rlgym_sim.utils.action_parsers import ActionParser, DefaultAction
+from rlgym_sim.utils.obs_builders import DefaultObs, ObsBuilder
+from rlgym_sim.utils.reward_functions import DefaultReward, RewardFunction
+from rlgym_sim.utils.state_setters import DefaultState, StateSetter
 from rlgym_sim.utils.terminal_conditions import common_conditions
 
 
@@ -20,10 +20,10 @@ def make(
         common_conditions.TimeoutCondition(225),
         common_conditions.GoalScoredCondition(),
     ),
-    reward_fn: object = DefaultReward(),
-    obs_builder: object = DefaultObs(),
-    action_parser: object = DefaultAction(),
-    state_setter: object = DefaultState(),
+    reward_fn: RewardFunction = DefaultReward(),
+    obs_builder: ObsBuilder = DefaultObs(),
+    action_parser: ActionParser = DefaultAction(),
+    state_setter: StateSetter = DefaultState(),
 ):
     """
     :param tick_skip: The amount of physics ticks your action will be repeated for
