@@ -7,7 +7,7 @@ This project is a TEMPORARY STOP-GAP to use RocketSim while RLGym 2.0 is in deve
 This project requires you to acquire assets from a copy of Rocket League that you own with an asset dumper. I will not walk you through this process. The necessary links and basic instructions are listed below. If you cannot follow those, don't bother me.
 
 ## INSTALLATION
-1. Install Rocketsim via `pip install rocketsim` 
+1. Install RocketSim via `pip install rocketsim` 
 2. Install this project with pip via `pip install git+https://github.com/AechPro/rocket-league-gym-sim@main`
 3. Build and run the [asset dumper](https://github.com/ZealanL/RLArenaCollisionDumper)
 4. Move the dumped assets to the top level of your project directory
