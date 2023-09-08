@@ -4,14 +4,13 @@ A version of [RLGym](https://www.rlgym.org) for use with the [RocketSim](https:/
 ## FOREWORD
 This project is a TEMPORARY STOP-GAP to use RocketSim while RLGym 2.0 is in development. I provide no guarantees that it is bug-free or that I will not make breaking changes to this project in the future.
 
-This project requires you to install [python bindings](https://github.com/mtheall/RocketSim/tree/python-dev) for RocketSim from a separate project, which will require c++20 build tools. Further, you will need to acquire assets from a copy of Rocket League that you own with an asset dumper. I will not walk you through this process. The necessary links and basic instructions are listed below. If you cannot follow those, don't bother me.
+This project requires you to acquire assets from a copy of Rocket League that you own with an asset dumper. I will not walk you through this process. The necessary links and basic instructions are listed below. If you cannot follow those, don't bother me.
 
 ## INSTALLATION
-1. You will need c++20 build tools
-2. Build RocketSim and install the Python bindings via `pip install git+https://github.com/mtheall/RocketSim@5fee384d4ae1d88e8d025a5b00bb855e14465d8c` 
-3. Install this project with pip via `pip install git+https://github.com/AechPro/rocket-league-gym-sim@main`
-4. Build and run the [asset dumper](https://github.com/ZealanL/RLArenaCollisionDumper)
-5. Move the dumped assets to the top level of your project directory
+1. Install Rocketsim via `pip install rocketsim` 
+2. Install this project with pip via `pip install git+https://github.com/AechPro/rocket-league-gym-sim@main`
+3. Build and run the [asset dumper](https://github.com/ZealanL/RLArenaCollisionDumper)
+4. Move the dumped assets to the top level of your project directory
 
 ## USAGE
 This project acts as a drop-in replacement for RLGym and can be used in exactly the same way. Barring the changed variables listed below, you can replace every instance of `rlgym` with `rlgym_sim` (or simply `import rlgym_sim as rlgym`) and your existing RLGym code should work. 
