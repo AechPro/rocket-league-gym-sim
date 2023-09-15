@@ -18,8 +18,8 @@ setup(
         "gym>=0.17",
         "numpy>=1.19",
     ],
-    python_requires=">=3.7",
-    license="Apache 2.0",
-    license_file="LICENSE",
-    keywords=["rocket-league", "gym", "reinforcement-learning", "simulation"],
+    python_requires='>=3.7',
+    license='Apache 2.0',
+    license_file='LICENSE',
+    keywords=['rocket-league', 'gym', 'reinforcement-learning', 'simulation']
 )
