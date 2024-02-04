@@ -88,7 +88,7 @@ class Gym(Env):
             return
 
         self.rendered = True
-        rlviser.render_rlgym(self._prev_state)
+        self._game.render(rlviser.render)
 
     def close(self):
         if self.rendered:
