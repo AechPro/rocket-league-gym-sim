@@ -33,6 +33,7 @@ class RocketSimGame(object):
 
         self.blue_score = 0
         self.orange_score = 0
+        self.total_steps = 0
 
         self.gamestate = GameState()
         self.new_game(self.tick_skip, self.team_size, self.spawn_opponents)
@@ -156,7 +157,18 @@ class RocketSimGame(object):
         if self.tick_skip > 1:
             self.arena.step(self.tick_skip-1)
 
+        self.total_steps += self.tick_skip
         return gamestate
+
+    def render(self, rlviser_render_fn):
+        pad_states = [pad.get_state().is_active for pad in self.arena.get_boost_pads()]
+        ball = self.arena.ball.get_state()
+        car_data = [
+            (car.id, car.team, car.get_config(), car.get_state())
+            for car in self.arena.get_cars()
+        ]
+
+        rlviser_render_fn(self.total_steps, self.arena.tick_rate, rsim.GameMode.SOCCAR, pad_states, ball, car_data)
 
     def _build_gamestate(self):
         players = self.players
