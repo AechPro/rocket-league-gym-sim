@@ -6,16 +6,30 @@ from rlgym_sim.utils.gamestates import GameState, PlayerData
 
 
 class LiuDistancePlayerToBallReward(RewardFunction):
+    """
+    LiuDistancePlayerToBallReward Returns exponentially higher reward the closer the agent is to the ball. This is equivalent to LiuDistanceBallToGoalReward.
+    """
+
     def reset(self, initial_state: GameState):
         pass
 
-    def get_reward(self, player: PlayerData, state: GameState, previous_action: np.ndarray) -> float:
+    def get_reward(
+        self, player: PlayerData, state: GameState, previous_action: np.ndarray
+    ) -> float:
         # Compensate for inside of ball being unreachable (keep max reward at 1)
-        dist = np.linalg.norm(player.car_data.position - state.ball.position) - BALL_RADIUS
-        return np.exp(-0.5 * dist / CAR_MAX_SPEED)  # Inspired by https://arxiv.org/abs/2105.12196
+        dist = (
+            np.linalg.norm(player.car_data.position - state.ball.position) - BALL_RADIUS
+        )
+        return np.exp(
+            -0.5 * dist / CAR_MAX_SPEED
+        )  # Inspired by https://arxiv.org/abs/2105.12196
 
 
 class VelocityPlayerToBallReward(RewardFunction):
+    """
+    VelocityPlayerToBallReward     Returns the scalar projection of the agent's velocity vector on to the ball's position vector.
+    """
+
     def __init__(self, use_scalar_projection=False):
         super().__init__()
         self.use_scalar_projection = use_scalar_projection
@@ -23,7 +37,9 @@ class VelocityPlayerToBallReward(RewardFunction):
     def reset(self, initial_state: GameState):
         pass
 
-    def get_reward(self, player: PlayerData, state: GameState, previous_action: np.ndarray) -> float:
+    def get_reward(
+        self, player: PlayerData, state: GameState, previous_action: np.ndarray
+    ) -> float:
         vel = player.car_data.linear_velocity
         pos_diff = state.ball.position - player.car_data.position
         if self.use_scalar_projection:
@@ -40,24 +56,38 @@ class VelocityPlayerToBallReward(RewardFunction):
 
 
 class FaceBallReward(RewardFunction):
+    """
+    FaceBallReward Returns positive reward scaled by the angle between the nose of the agent's car and the ball.
+    """
+
     def reset(self, initial_state: GameState):
         pass
 
-    def get_reward(self, player: PlayerData, state: GameState, previous_action: np.ndarray) -> float:
+    def get_reward(
+        self, player: PlayerData, state: GameState, previous_action: np.ndarray
+    ) -> float:
         pos_diff = state.ball.position - player.car_data.position
         norm_pos_diff = pos_diff / np.linalg.norm(pos_diff)
         return float(np.dot(player.car_data.forward(), norm_pos_diff))
 
 
 class TouchBallReward(RewardFunction):
-    def __init__(self, aerial_weight=0.):
+    """
+    TouchBallReward Returns positive reward every time the agent touches the ball with an optional scaling factor for how high the ball was in the air when touched.
+    """
+
+    def __init__(self, aerial_weight=0.0):
         self.aerial_weight = aerial_weight
 
     def reset(self, initial_state: GameState):
         pass
 
-    def get_reward(self, player: PlayerData, state: GameState, previous_action: np.ndarray) -> float:
+    def get_reward(
+        self, player: PlayerData, state: GameState, previous_action: np.ndarray
+    ) -> float:
         if player.ball_touched:
             # Default just rewards 1, set aerial weight to reward more depending on ball height
-            return ((state.ball.position[2] + BALL_RADIUS) / (2 * BALL_RADIUS)) ** self.aerial_weight
+            return (
+                (state.ball.position[2] + BALL_RADIUS) / (2 * BALL_RADIUS)
+            ) ** self.aerial_weight
         return 0
