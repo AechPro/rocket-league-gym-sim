@@ -16,7 +16,7 @@ setup(
     url='https://github.com/AechPro/rocket-league-gym-sim',
     install_requires=[
         'gym>=0.17',
-        'numpy>=1.19',
+        'numpy>=1.19, <2.0',
     ],
     python_requires='>=3.7',
     license='Apache 2.0',
